@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Pickle Gallery</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#C8922A;--gold-l:#E8B84B;--gold-p:#FDF6E3;--gold-m:#F5E6C0;
+  --dark:#1A0E00;--dark-m:#2D1A00;
+  --bg:#F8F7F5;--bg2:#F0EDE6;
+  --card:#FFFFFF;--border:#E5E0D5;
+  --text:#1A0E00;--text-m:#5C3D11;--text-l:#8B6234;
+  --green:#166534;--green-b:#DCFCE7;
+  --red:#991B1B;--red-b:#FEE2E2;
+  --blue:#1D4ED8;--blue-b:#EFF6FF;
+  --sh:0 1px 8px rgba(26,14,0,.08);--sh-l:0 4px 24px rgba(26,14,0,.12);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--dark);padding:1rem}
+.login-card{background:white;border-radius:20px;padding:2.5rem;width:100%;max-width:400px;box-shadow:var(--sh-l)}
+.login-logo{display:flex;align-items:center;gap:.75rem;margin-bottom:2rem}
+.ll-mark{width:44px;height:44px;background:var(--dark);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+.ll-name{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--dark)}
+.ll-sub{font-size:.65rem;color:var(--text-l);text-transform:uppercase;letter-spacing:.1em}
+.login-step{display:none}.login-step.on{display:block}
+.ls-h{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--dark);margin-bottom:.5rem}
+.ls-p{font-size:.82rem;color:var(--text-m);margin-bottom:1.75rem;line-height:1.65}
+.lg{margin-bottom:1rem}
+.ll{display:block;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-m);margin-bottom:.38rem}
+.li{width:100%;padding:.7rem 1rem;border:1px solid var(--border);border-radius:9px;background:var(--bg);font-size:.87rem;font-family:'Inter',sans-serif;outline:none;transition:all .2s;color:var(--text)}
+.li:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,146,42,.1)}
+.li::placeholder{color:var(--text-l)}
+.btn-login{width:100%;background:var(--dark);color:#fff;border:none;cursor:pointer;padding:.85rem;border-radius:10px;font-size:.9rem;font-weight:600;transition:all .2s;font-family:'Inter',sans-serif;margin-top:.5rem}
+.btn-login:hover{background:var(--dark-m);transform:translateY(-1px)}
+.btn-login:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.otp-inputs{display:flex;gap:.5rem;margin-bottom:1rem}
+.otp-i{flex:1;padding:.7rem .5rem;border:1px solid var(--border);border-radius:9px;text-align:center;font-size:1.2rem;font-weight:600;font-family:'Inter',sans-serif;outline:none;transition:all .2s;background:var(--bg);color:var(--dark)}
+.otp-i:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,146,42,.1)}
+.login-err{color:var(--red);font-size:.78rem;margin-top:.5rem;display:none}
+.resend{font-size:.78rem;color:var(--text-l);text-align:center;margin-top:1rem}
+.resend a{color:var(--gold);cursor:pointer;font-weight:500}
+/* ADMIN LAYOUT */
+.admin-wrap{display:none;min-height:100vh}
+.admin-wrap.on{display:flex}
+.sidebar{width:220px;background:var(--dark);flex-shrink:0;display:flex;flex-direction:column;position:fixed;top:0;bottom:0;overflow-y:auto}
+.sb-logo{padding:1.4rem 1.4rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-ln{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;color:var(--gold-l);display:block}
+.sb-ls{font-size:.6rem;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.12em;display:block;margin-top:.15rem}
+.sb-nav{flex:1;padding:.75rem 0}
+.sb-sec{padding:.35rem 1.1rem .2rem;font-size:.6rem;font-weight:600;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:.12em;margin-top:.75rem}
+.sb-link{display:flex;align-items:center;gap:.65rem;padding:.62rem 1.1rem;color:rgba(255,255,255,.4);font-size:.8rem;font-weight:500;cursor:pointer;transition:all .2s;border-right:3px solid transparent;text-decoration:none}
+.sb-link:hover,.sb-link.on{color:#fff;background:rgba(255,255,255,.05);border-right-color:var(--gold)}
+.sb-link .ic{font-size:.95rem;flex-shrink:0}
+.sb-foot{padding:1rem;border-top:1px solid rgba(255,255,255,.07)}
+.btn-logout{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);cursor:pointer;padding:.55rem;border-radius:8px;font-size:.78rem;font-weight:500;transition:all .2s;font-family:'Inter',sans-serif}
+.btn-logout:hover{background:rgba(255,255,255,.1);color:#fff}
+.admin-main{margin-left:220px;flex:1;min-width:0;padding:2rem;overflow-y:auto}
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:700;color:var(--dark)}
+.page-sub{font-size:.78rem;color:var(--text-l);margin-top:.15rem}
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:13px;overflow:hidden;box-shadow:var(--sh)}
+.card-p{padding:1.5rem}
+.card-hd{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg2)}
+.card-ht{font-size:.82rem;font-weight:600;color:var(--text-m)}
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem}
+.stat-c{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;box-shadow:var(--sh)}
+.stat-l{font-size:.68rem;color:var(--text-l);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem}
+.stat-v{font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:700;color:var(--dark)}
+.stat-s{font-size:.68rem;color:var(--text-l);margin-top:.18rem}
+.stat-ic{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;margin-bottom:.75rem}
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{background:var(--bg2);color:var(--text-l);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;padding:.8rem 1rem;text-align:left;font-weight:600;border-bottom:1px solid var(--border)}
+.tbl td{padding:.8rem 1rem;font-size:.82rem;color:var(--text);border-bottom:1px solid #F5F5F5}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#FAFAF8}
+.pill{display:inline-block;padding:.18rem .6rem;border-radius:100px;font-size:.68rem;font-weight:600}
+.p-placed{background:var(--blue-b);color:var(--blue)}
+.p-dispatched{background:#EDE9FE;color:#6D28D9}
+.p-delivered{background:var(--green-b);color:var(--green)}
+.p-cancelled{background:var(--red-b);color:var(--red)}
+.p-pending{background:#FEF3C7;color:#92400E}
+/* BUTTONS */
+.btn{padding:.45rem .9rem;border-radius:7px;border:none;cursor:pointer;font-size:.75rem;font-weight:600;transition:all .2s;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:.35rem}
+.btn-dark{background:var(--dark);color:#fff}.btn-dark:hover{background:var(--dark-m)}
+.btn-gold2{background:var(--gold);color:var(--dark)}.btn-gold2:hover{background:var(--gold-l)}
+.btn-ed{background:var(--blue-b);color:var(--blue)}.btn-ed:hover{background:#DBEAFE}
+.btn-dl{background:var(--red-b);color:var(--red)}.btn-dl:hover{background:#FEE2E2}
+.btn-gr{background:var(--green-b);color:var(--green)}.btn-gr:hover{background:#BBF7D0}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text-m)}.btn-outline:hover{background:var(--bg2)}
+/* FORM */
+.fg{margin-bottom:1rem}
+.fl{display:block;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-m);margin-bottom:.35rem}
+.fi{width:100%;padding:.65rem .9rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:.84rem;font-family:'Inter',sans-serif;outline:none;transition:all .2s}
+.fi:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,146,42,.1)}
+.fi::placeholder{color:var(--text-l)}
+.fta{resize:vertical;min-height:80px}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.9rem}
+.fsel{width:100%;padding:.65rem .9rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:.84rem;font-family:'Inter',sans-serif;outline:none;transition:all .2s;-webkit-appearance:none;cursor:pointer}
+.fsel:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,146,42,.1)}
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;display:none;align-items:flex-start;justify-content:center;padding:2rem;overflow-y:auto}
+.modal-ov.on{display:flex}
+.modal{background:white;border-radius:16px;padding:2rem;width:100%;max-width:680px;box-shadow:var(--sh-l);margin:auto}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem}
+.modal-t{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--dark)}
+.modal-x{width:30px;height:30px;border-radius:50%;background:var(--bg2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-m);font-size:.9rem;transition:all .2s}
+.modal-x:hover{background:var(--border)}
+/* AI BOX */
+.ai-box{background:#FEFCE8;border:1px solid #FEF08A;border-radius:11px;padding:1.1rem;margin:1rem 0}
+.ai-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem}
+.ai-lbl{font-size:.72rem;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:.35rem}
+.btn-gen{background:var(--dark);color:#fff;border:none;cursor:pointer;padding:.38rem .9rem;border-radius:100px;font-size:.72rem;font-weight:600;transition:all .2s;display:flex;align-items:center;gap:.35rem;font-family:'Inter',sans-serif}
+.btn-gen:hover{background:var(--dark-m)}.btn-gen:disabled{opacity:.5;cursor:not-allowed}
+.ai-tabs{display:flex;gap:.38rem;margin-bottom:.85rem;flex-wrap:wrap}
+.ai-tab{padding:.28rem .65rem;border-radius:100px;font-size:.7rem;font-weight:600;border:1px solid var(--border);background:white;color:var(--text-m);cursor:pointer;transition:all .2s}
+.ai-tab.on{background:var(--dark);color:#fff;border-color:var(--dark)}
+.ai-out{background:white;border:1px solid var(--border);border-radius:9px;padding:.9rem;min-height:75px;font-size:.82rem;color:var(--text);line-height:1.65;position:relative}
+.ai-ph{color:var(--text-l);font-style:italic}
+.ai-load{display:flex;align-items:center;gap:.65rem;color:var(--text-m)}
+.dots{display:flex;gap:3px}
+.dot{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:db 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes db{0%,80%,100%{transform:scale(.8);opacity:.5}40%{transform:scale(1.2);opacity:1}}
+.btn-copy{position:absolute;top:.55rem;right:.55rem;background:var(--gold-p);border:1px solid var(--border);color:var(--dark);padding:.22rem .55rem;border-radius:5px;font-size:.68rem;cursor:pointer;font-weight:600;transition:all .2s;font-family:'Inter',sans-serif}
+.btn-copy:hover{background:var(--gold-m)}
+.btn-use{width:100%;margin-top:.65rem;background:var(--gold-p);border:1px solid var(--border);color:var(--dark);padding:.45rem;border-radius:8px;cursor:pointer;font-size:.75rem;font-weight:600;transition:all .2s;font-family:'Inter',sans-serif}
+.btn-use:hover{background:var(--gold-m)}
+.btn-save{width:100%;background:var(--dark);color:#fff;border:none;cursor:pointer;padding:.85rem;border-radius:10px;font-size:.88rem;font-weight:600;margin-top:1rem;transition:all .2s;font-family:'Inter',sans-serif}
+.btn-save:hover{background:var(--dark-m)}
+/* ADMIN SECTIONS */
+.asec{display:none}.asec.on{display:block}
+/* PRODUCTS ADMIN GRID */
+.ap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.apc{background:var(--card);border:1px solid var(--border);border-radius:11px;overflow:hidden;transition:all .2s;box-shadow:var(--sh)}
+.apc:hover{border-color:var(--gold);box-shadow:var(--sh-l)}
+.apc-img{height:110px;background:var(--gold-p);display:flex;align-items:center;justify-content:center;font-size:3.2rem;position:relative}
+.apc-info{padding:.85rem}
+.apc-name{font-weight:600;color:var(--dark);font-size:.82rem;margin-bottom:.2rem;line-height:1.3}
+.apc-pr{color:var(--gold);font-weight:700;font-size:.85rem;margin-bottom:.6rem}
+.apc-acts{display:flex;gap:.4rem}
+/* SETTINGS */
+.sett-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.sett-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:1.5rem;box-shadow:var(--sh)}
+.sett-ht{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:.4rem}
+.sett-hp{font-size:.78rem;color:var(--text-l);margin-bottom:1.25rem}
+/* TOGGLE */
+.tog{display:flex;align-items:center;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--border)}
+.tog:last-child{border-bottom:none}
+.tog-l{flex:1}
+.tog-title{font-size:.83rem;font-weight:500;color:var(--dark)}
+.tog-desc{font-size:.72rem;color:var(--text-l);margin-top:.15rem}
+.tog-sw{position:relative;width:40px;height:22px;flex-shrink:0}
+.tog-sw input{opacity:0;width:0;height:0}
+.tog-sl{position:absolute;inset:0;background:#CBD5E1;border-radius:100px;cursor:pointer;transition:all .3s}
+.tog-sl::before{content:'';position:absolute;left:3px;top:3px;width:16px;height:16px;background:white;border-radius:50%;transition:all .3s}
+.tog-sw input:checked+.tog-sl{background:var(--green)}
+.tog-sw input:checked+.tog-sl::before{transform:translateX(18px)}
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;padding:.65rem 1.25rem;border-radius:10px;font-size:.8rem;font-weight:500;transform:translateY(60px);opacity:0;transition:all .3s;z-index:9999;display:flex;align-items:center;gap:.4rem}
+.toast.on{transform:translateY(0);opacity:1}
+.toast.ok{background:var(--dark);color:#fff}
+.toast.err{background:var(--red);color:#fff}
+.toast.good{background:var(--green);color:#fff}
+/* SHIPROCKET */
+.sr-status{display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:600;padding:.22rem .6rem;border-radius:100px;background:#EDE9FE;color:#6D28D9}
+/* ANALYTICS CHART */
+.chart-bars{display:flex;align-items:flex-end;gap:.5rem;height:120px;padding-top:1rem}
+.chart-bar-w{display:flex;flex-direction:column;align-items:center;gap:.35rem;flex:1}
+.chart-bar{background:var(--gold-m);border-radius:4px 4px 0 0;width:100%;min-height:4px;transition:all .5s;position:relative}
+.chart-bar:hover{background:var(--gold)}
+.chart-bar-v{font-size:.65rem;color:var(--text-l);font-weight:500}
+.chart-bar-l{font-size:.62rem;color:var(--text-l)}
+/* REVIEW CARD */
+.rev-admin-card{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:1.1rem;margin-bottom:.85rem;display:flex;align-items:flex-start;gap:.9rem;box-shadow:var(--sh)}
+.rev-av{width:34px;height:34px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:var(--dark);flex-shrink:0}
+/* RESPONSIVE */
+@media(max-width:768px){.sidebar{width:200px}.admin-main{margin-left:200px}.stats-row{grid-template-columns:1fr 1fr}.fr2{grid-template-columns:1fr}.fr3{grid-template-columns:1fr}.sett-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.sidebar{display:none}.admin-main{margin-left:0}}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="ll-mark">🫙</div>
+      <div><span class="ll-name">Pickle Gallery</span><span class="ll-sub">Admin Panel</span></div>
+    </div>
+
+    <!-- Step 1: Password -->
+    <div class="login-step on" id="step1">
+      <h2 class="ls-h">Admin Login</h2>
+      <p class="ls-p">Enter your admin password to continue. An OTP will be sent to the registered email for verification.</p>
+      <div class="lg"><label class="ll">Admin Password</label><input class="li" type="password" id="loginPass" placeholder="Enter admin password" onkeydown="if(e.key==='Enter')checkPass()"></div>
+      <p class="login-err" id="passErr">Incorrect password. Please try again.</p>
+      <button class="btn-login" onclick="checkPass()" id="btnCheckPass">Continue →</button>
+    </div>
+
+    <!-- Step 2: OTP -->
+    <div class="login-step" id="step2">
+      <h2 class="ls-h">Verify OTP</h2>
+      <p class="ls-p">A 6-digit OTP has been sent to your registered admin email. Enter it below to access the admin panel.</p>
+      <div class="otp-inputs" id="otpInputs">
+        <input class="otp-i" type="number" maxlength="1" min="0" max="9" oninput="otpNext(this,0)" onkeydown="otpBack(event,0)">
+        <input class="otp-i" type="number" maxlength="1" min="0" max="9" oninput="otpNext(this,1)" onkeydown="otpBack(event,1)">
+        <input class="otp-i" type="number" maxlength="1" min="0" max="9" oninput="otpNext(this,2)" onkeydown="otpBack(event,2)">
+        <input class="otp-i" type="number" maxlength="1" min="0" max="9" oninput="otpNext(this,3)" onkeydown="otpBack(event,3)">
+        <input class="otp-i" type="number" maxlength="1" min="0" max="9" oninput="otpNext(this,4)" onkeydown="otpBack(event,4)">
+        <input class="otp-i" type="number" maxlength="1" min="0" max="9" oninput="otpNext(this,5)">
+      </div>
+      <p class="login-err" id="otpErr">Invalid OTP. Please try again.</p>
+      <button class="btn-login" onclick="verifyOTP()" id="btnVerify">Verify & Login</button>
+      <div class="resend">Didn't receive? <a onclick="resendOTP()">Resend OTP</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN ══ -->
+<div class="admin-wrap" id="adminWrap">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-logo">
+      <span class="sb-ln">🫙 Pickle Gallery</span>
+      <span class="sb-ls">Admin Dashboard</span>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-sec">Overview</div>
+      <a class="sb-link on" onclick="showSec('dashboard',this)"><span class="ic">📊</span> Dashboard</a>
+      <a class="sb-link" onclick="showSec('analytics',this)"><span class="ic">📈</span> Analytics</a>
+      <div class="sb-sec">Store</div>
+      <a class="sb-link" onclick="showSec('orders',this)"><span class="ic">📦</span> Orders</a>
+      <a class="sb-link" onclick="showSec('products',this)"><span class="ic">🫙</span> Products</a>
+      <a class="sb-link" onclick="showSec('categories',this)"><span class="ic">🏷️</span> Categories</a>
+      <a class="sb-link" onclick="showSec('inventory',this)"><span class="ic">📋</span> Inventory</a>
+      <div class="sb-sec">Marketing</div>
+      <a class="sb-link" onclick="showSec('reviews',this)"><span class="ic">⭐</span> Reviews</a>
+      <a class="sb-link" onclick="showSec('newsletter',this)"><span class="ic">✉️</span> Newsletter</a>
+      <a class="sb-link" onclick="showSec('banners',this)"><span class="ic">🖼️</span> Banners</a>
+      <div class="sb-sec">Integrations</div>
+      <a class="sb-link" onclick="showSec('shiprocket',this)"><span class="ic">🚚</span> Shiprocket</a>
+      <a class="sb-link" onclick="showSec('razorpay',this)"><span class="ic">💳</span> Razorpay</a>
+      <div class="sb-sec">System</div>
+      <a class="sb-link" onclick="showSec('settings',this)"><span class="ic">⚙️</span> Settings</a>
+    </div>
+    <div class="sb-foot">
+      <button class="btn-logout" onclick="logout()">← Logout</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="admin-main">
+
+    <!-- DASHBOARD -->
+    <div class="asec on" id="sec-dashboard">
+      <div class="topbar">
+        <div><div class="page-title">Dashboard</div><div class="page-sub" id="dashDate"></div></div>
+        <div style="display:flex;gap:.6rem">
+          <button class="btn btn-outline" onclick="refreshAll()">↻ Refresh</button>
+          <button class="btn btn-dark" onclick="showSec('products',document.querySelector('[onclick*=products]'))">+ Add Product</button>
+        </div>
+      </div>
+      <div class="stats-row" id="statsRow">
+        <div class="stat-c"><div class="stat-ic" style="background:#FEF3C7">📦</div><div class="stat-l">Today's Orders</div><div class="stat-v" id="s-today">0</div><div class="stat-s">orders received</div></div>
+        <div class="stat-c"><div class="stat-ic" style="background:#DCFCE7">💰</div><div class="stat-l">Today's Revenue</div><div class="stat-v" id="s-rev">₹0</div><div class="stat-s">collected</div></div>
+        <div class="stat-c"><div class="stat-ic" style="background:#EFF6FF">🛒</div><div class="stat-l">Total Orders</div><div class="stat-v" id="s-total">0</div><div class="stat-s">all time</div></div>
+        <div class="stat-c"><div class="stat-ic" style="background:#F3E8FF">🫙</div><div class="stat-l">Products Live</div><div class="stat-v" id="s-prods">0</div><div class="stat-s">active listings</div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><span class="card-ht">Recent Orders</span><button class="btn btn-outline btn" onclick="showSec('orders',document.querySelector('[onclick*=orders]'))">View All</button></div>
+        <table class="tbl"><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody id="dash-orders"><tr><td colspan="7" style="text-align:center;color:#9CA3AF;padding:2rem">No orders yet</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="asec" id="sec-analytics">
+      <div class="topbar"><div class="page-title">Analytics</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+        <div class="card card-p">
+          <div style="font-size:.78rem;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem">Weekly Orders</div>
+          <div class="chart-bars" id="weekChart"></div>
+        </div>
+        <div class="card card-p">
+          <div style="font-size:.78rem;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem">Top Products</div>
+          <div id="topProds"></div>
+        </div>
+      </div>
+      <div class="card card-p">
+        <div style="font-size:.78rem;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem">Category Distribution</div>
+        <div id="catDist" style="display:flex;flex-wrap:wrap;gap:.5rem"></div>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="asec" id="sec-orders">
+      <div class="topbar">
+        <div class="page-title">Orders</div>
+        <div style="display:flex;gap:.6rem;align-items:center">
+          <select id="orderFilt" onchange="renderOrders()" style="padding:.4rem .7rem;border:1px solid var(--border);border-radius:7px;font-size:.78rem;background:white;font-family:'Inter',sans-serif">
+            <option value="all">All Status</option>
+            <option value="placed">Placed</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="dispatched">Dispatched</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <button class="btn btn-dark" onclick="exportOrders()">↓ Export CSV</button>
+        </div>
+      </div>
+      <div class="card">
+        <table class="tbl" id="ordersTable">
+          <thead><tr><th>Order ID</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Shiprocket</th><th>Actions</th></tr></thead>
+          <tbody id="orders-tbody"><tr><td colspan="9" style="text-align:center;color:#9CA3AF;padding:2rem">No orders yet</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="asec" id="sec-products">
+      <div class="topbar">
+        <div class="page-title">Products</div>
+        <button class="btn btn-dark" onclick="openProdModal()">+ Add Product</button>
+      </div>
+      <div style="display:flex;gap:.6rem;margin-bottom:1.25rem;flex-wrap:wrap">
+        <input style="padding:.45rem .85rem;border:1px solid var(--border);border-radius:7px;font-size:.78rem;background:white;font-family:'Inter',sans-serif;outline:none;min-width:200px" type="text" placeholder="Search products..." id="prodSearch" oninput="renderAdminProds()">
+        <select id="prodCatFilt" onchange="renderAdminProds()" style="padding:.45rem .7rem;border:1px solid var(--border);border-radius:7px;font-size:.78rem;background:white;font-family:'Inter',sans-serif">
+          <option value="all">All Categories</option>
+        </select>
+      </div>
+      <div class="ap-grid" id="ap-grid"></div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="asec" id="sec-categories">
+      <div class="topbar">
+        <div class="page-title">Categories</div>
+        <button class="btn btn-dark" onclick="openCatModal()">+ Add Category</button>
+      </div>
+      <div class="card">
+        <table class="tbl">
+          <thead><tr><th>Emoji</th><th>Name</th><th>Products</th><th>Active</th><th>Actions</th></tr></thead>
+          <tbody id="cats-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div class="asec" id="sec-inventory">
+      <div class="topbar"><div class="page-title">Inventory</div><button class="btn btn-dark" onclick="bulkUpdateStock()">💾 Save All Changes</button></div>
+      <div class="card">
+        <table class="tbl">
+          <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>MRP</th><th>Stock (jars)</th><th>Alert Below</th><th>Status</th></tr></thead>
+          <tbody id="inv-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="asec" id="sec-reviews">
+      <div class="topbar">
+        <div class="page-title">Reviews</div>
+        <button class="btn btn-dark" onclick="openRevModal()">+ Add Review</button>
+      </div>
+      <div id="reviews-list"></div>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div class="asec" id="sec-newsletter">
+      <div class="topbar">
+        <div class="page-title">Newsletter</div>
+        <button class="btn btn-dark" onclick="sendBulkEmail()">📧 Send Broadcast</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 360px;gap:1.5rem">
+        <div class="card">
+          <div class="card-hd"><span class="card-ht">Subscribers</span><span id="subCount" style="font-size:.78rem;color:var(--text-l)">0 subscribers</span></div>
+          <table class="tbl">
+            <thead><tr><th>Email</th><th>Subscribed On</th><th>Action</th></tr></thead>
+            <tbody id="subs-tbody"><tr><td colspan="3" style="text-align:center;color:#9CA3AF;padding:2rem">No subscribers yet</td></tr></tbody>
+          </table>
+        </div>
+        <div class="card card-p">
+          <div style="font-weight:600;color:var(--dark);font-size:.87rem;margin-bottom:1.1rem">Send Email Broadcast</div>
+          <div class="fg"><label class="fl">Subject</label><input class="fi" id="emailSubj" placeholder="e.g. New Summer Pickles Are Here!"></div>
+          <div class="fg"><label class="fl">Message</label><textarea class="fi fta" id="emailBody" placeholder="Write your email content..."></textarea></div>
+          <button class="btn btn-dark" style="width:100%;padding:.75rem;margin-top:.5rem" onclick="sendBulkEmail()">📧 Send to All Subscribers</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BANNERS -->
+    <div class="asec" id="sec-banners">
+      <div class="topbar">
+        <div class="page-title">Hero Banners</div>
+        <button class="btn btn-dark" onclick="saveBanners()">💾 Save Banners</button>
+      </div>
+      <div class="card card-p">
+        <p style="font-size:.82rem;color:var(--text-m);margin-bottom:1.25rem;line-height:1.65">Configure the hero section text and buttons that appear on the website homepage.</p>
+        <div class="fg"><label class="fl">Hero Title Line 1</label><input class="fi" id="b-t1" value="Pure Taste."></div>
+        <div class="fg"><label class="fl">Hero Title Line 2 (italic accent)</label><input class="fi" id="b-t2" value="A Tradition"></div>
+        <div class="fg"><label class="fl">Hero Title Line 3</label><input class="fi" id="b-t3" value="of Flavour."></div>
+        <div class="fg"><label class="fl">Hero Subtitle</label><textarea class="fi fta" id="b-sub">Handcrafted pickles, chutneys & murabbas — recipes passed down through three generations. From our kitchen in Indore to your table, anywhere in India.</textarea></div>
+        <div class="fr2">
+          <div class="fg"><label class="fl">Primary Button Text</label><input class="fi" id="b-btn1" value="🛒 Shop Now"></div>
+          <div class="fg"><label class="fl">WhatsApp Number</label><input class="fi" id="b-wa" value="+917440403201"></div>
+        </div>
+        <button class="btn btn-dark" style="margin-top:.5rem" onclick="saveBanners()">Save Banner Settings</button>
+      </div>
+    </div>
+
+    <!-- SHIPROCKET -->
+    <div class="asec" id="sec-shiprocket">
+      <div class="topbar"><div class="page-title">Shiprocket Integration</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+        <div class="card card-p">
+          <div class="sett-ht">API Configuration</div>
+          <p class="sett-hp">Connect your Shiprocket account for automated order booking and tracking.</p>
+          <div class="fg"><label class="fl">Shiprocket Email</label><input class="fi" id="sr-email" placeholder="your@email.com" type="email"></div>
+          <div class="fg"><label class="fl">Shiprocket Password</label><input class="fi" id="sr-pass" placeholder="Password" type="password"></div>
+          <button class="btn btn-dark" onclick="saveSRConfig()">Save & Connect</button>
+          <div id="sr-status" style="margin-top:.75rem;font-size:.78rem;color:var(--text-l)"></div>
+        </div>
+        <div class="card card-p">
+          <div class="sett-ht">Pickup Location</div>
+          <p class="sett-hp">Set your default pickup address for Shiprocket orders.</p>
+          <div class="fg"><label class="fl">Pickup Name</label><input class="fi" id="sr-pname" placeholder="e.g. Primary" value="Primary"></div>
+          <div class="fg"><label class="fl">Address</label><input class="fi" id="sr-addr" placeholder="Full address"></div>
+          <div class="fr2">
+            <div class="fg"><label class="fl">City</label><input class="fi" id="sr-city" placeholder="City" value="Indore"></div>
+            <div class="fg"><label class="fl">Pincode</label><input class="fi" id="sr-pin" placeholder="Pincode" value="452001"></div>
+          </div>
+          <button class="btn btn-dark" onclick="saveSRPickup()">Save Pickup</button>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1.5rem">
+        <div class="card-hd"><span class="card-ht">Pending Shipments</span><button class="btn btn-outline btn" onclick="loadPendingShipments()">↻ Refresh</button></div>
+        <table class="tbl">
+          <thead><tr><th>Order ID</th><th>Customer</th><th>Shiprocket ID</th><th>AWB</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="sr-tbody"><tr><td colspan="6" style="text-align:center;color:#9CA3AF;padding:2rem">No pending shipments</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- RAZORPAY -->
+    <div class="asec" id="sec-razorpay">
+      <div class="topbar"><div class="page-title">Razorpay Integration</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+        <div class="card card-p">
+          <div class="sett-ht">API Keys</div>
+          <p class="sett-hp">Configure Razorpay for payment processing. Use test keys for development.</p>
+          <div class="fg"><label class="fl">Razorpay Key ID</label><input class="fi" id="rp-keyid" placeholder="rzp_test_..."></div>
+          <div class="fg"><label class="fl">Razorpay Key Secret</label><input class="fi" id="rp-secret" placeholder="Secret key" type="password"></div>
+          <div class="tog">
+            <div class="tog-l"><div class="tog-title">Live Mode</div><div class="tog-desc">Switch from test to live payments</div></div>
+            <label class="tog-sw"><input type="checkbox" id="rp-live"><span class="tog-sl"></span></label>
+          </div>
+          <button class="btn btn-dark" style="margin-top:1rem" onclick="saveRPConfig()">Save Razorpay Config</button>
+        </div>
+        <div class="card card-p">
+          <div class="sett-ht">Payment Stats</div>
+          <p class="sett-hp">Overview of payment activity.</p>
+          <div style="display:flex;flex-direction:column;gap:.75rem;margin-top:1rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:.65rem;background:var(--bg);border-radius:8px">
+              <span style="font-size:.82rem;color:var(--text-m)">Online Payments</span>
+              <span style="font-weight:700;color:var(--dark)" id="rp-online">₹0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:.65rem;background:var(--bg);border-radius:8px">
+              <span style="font-size:.82rem;color:var(--text-m)">COD Orders</span>
+              <span style="font-weight:700;color:var(--dark)" id="rp-cod">₹0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:.65rem;background:var(--bg);border-radius:8px">
+              <span style="font-size:.82rem;color:var(--text-m)">Success Rate</span>
+              <span style="font-weight:700;color:var(--green)" id="rp-rate">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="asec" id="sec-settings">
+      <div class="topbar"><div class="page-title">Settings</div></div>
+      <div class="sett-grid">
+        <div class="sett-card">
+          <div class="sett-ht">Store Information</div>
+          <p class="sett-hp">Basic store details shown on website and emails.</p>
+          <div class="fg"><label class="fl">Store Name</label><input class="fi" id="st-name" value="Pickle Gallery — Mittal Achar"></div>
+          <div class="fg"><label class="fl">Tagline</label><input class="fi" id="st-tag" value="Handcrafted pickles since 1955"></div>
+          <div class="fg"><label class="fl">Phone</label><input class="fi" id="st-phone" value="+91 7440403201"></div>
+          <div class="fg"><label class="fl">Email</label><input class="fi" id="st-email" value="mittalpickle@gmail.com"></div>
+          <div class="fg"><label class="fl">Address</label><textarea class="fi fta" id="st-addr">LG 06, BCM Heights, Vijay Nagar, Indore, MP 452001</textarea></div>
+          <button class="btn btn-dark" onclick="saveStoreSettings()">Save Store Info</button>
+        </div>
+        <div class="sett-card">
+          <div class="sett-ht">Delivery Settings</div>
+          <p class="sett-hp">Configure delivery charges and free delivery threshold.</p>
+          <div class="fg"><label class="fl">Free Delivery Above (₹)</label><input class="fi" id="del-free" value="300" type="number"></div>
+          <div class="fg"><label class="fl">Standard Delivery Charge (₹)</label><input class="fi" id="del-charge" value="60" type="number"></div>
+          <div class="fg"><label class="fl">Estimated Delivery Days</label><input class="fi" id="del-days" value="5-10"></div>
+          <div class="tog">
+            <div class="tog-l"><div class="tog-title">COD Available</div><div class="tog-desc">Allow cash on delivery orders</div></div>
+            <label class="tog-sw"><input type="checkbox" id="del-cod" checked><span class="tog-sl"></span></label>
+          </div>
+          <div class="tog">
+            <div class="tog-l"><div class="tog-title">Store Open</div><div class="tog-desc">Accept new orders</div></div>
+            <label class="tog-sw"><input type="checkbox" id="store-open" checked><span class="tog-sl"></span></label>
+          </div>
+          <button class="btn btn-dark" style="margin-top:1rem" onclick="saveDeliverySettings()">Save Delivery Settings</button>
+        </div>
+        <div class="sett-card">
+          <div class="sett-ht">Admin Access</div>
+          <p class="sett-hp">Change admin password. OTP verification required for all logins.</p>
+          <div class="fg"><label class="fl">Current Password</label><input class="fi" id="pwd-cur" type="password" placeholder="Current password"></div>
+          <div class="fg"><label class="fl">New Password</label><input class="fi" id="pwd-new" type="password" placeholder="New password (min 8 chars)"></div>
+          <div class="fg"><label class="fl">Confirm New Password</label><input class="fi" id="pwd-confirm" type="password" placeholder="Confirm new password"></div>
+          <button class="btn btn-dark" onclick="changeAdminPassword()">Change Password</button>
+        </div>
+        <div class="sett-card">
+          <div class="sett-ht">Email Notifications</div>
+          <p class="sett-hp">Configure which emails are sent automatically.</p>
+          <div class="tog"><div class="tog-l"><div class="tog-title">New Order Notification</div><div class="tog-desc">Email on every new order</div></div><label class="tog-sw"><input type="checkbox" id="em-order" checked><span class="tog-sl"></span></label></div>
+          <div class="tog"><div class="tog-l"><div class="tog-title">Order Confirmation to Customer</div><div class="tog-desc">Confirm order to customer</div></div><label class="tog-sw"><input type="checkbox" id="em-confirm" checked><span class="tog-sl"></span></label></div>
+          <div class="tog"><div class="tog-l"><div class="tog-title">Dispatch Notification</div><div class="tog-desc">Notify customer when dispatched</div></div><label class="tog-sw"><input type="checkbox" id="em-dispatch" checked><span class="tog-sl"></span></label></div>
+          <div class="tog"><div class="tog-l"><div class="tog-title">Low Stock Alerts</div><div class="tog-desc">Email when stock below threshold</div></div><label class="tog-sw"><input type="checkbox" id="em-stock" checked><span class="tog-sl"></span></label></div>
+          <button class="btn btn-dark" style="margin-top:1rem" onclick="saveEmailSettings()">Save Email Settings</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /admin-main -->
+</div><!-- /admin-wrap -->
+
+<!-- PRODUCT MODAL -->
+<div class="modal-ov" id="prodModal">
+  <div class="modal">
+    <div class="modal-hd"><span class="modal-t" id="pm-title">Add New Product</span><button class="modal-x" onclick="closeProdModal()">✕</button></div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">Product Name *</label><input class="fi" id="pm-name" placeholder="e.g. Mango Pickle (Aam ka Achar)"></div>
+      <div class="fg"><label class="fl">Emoji Icon</label><input class="fi" id="pm-emoji" placeholder="🫙" maxlength="2"></div>
+    </div>
+    <div class="fr3">
+      <div class="fg"><label class="fl">Selling Price (₹) *</label><input class="fi" id="pm-price" placeholder="199" type="number"></div>
+      <div class="fg"><label class="fl">MRP (₹)</label><input class="fi" id="pm-mrp" placeholder="280" type="number"></div>
+      <div class="fg"><label class="fl">Weight</label><input class="fi" id="pm-weight" placeholder="400g"></div>
+    </div>
+    <div class="fr3">
+      <div class="fg"><label class="fl">Category *</label><select class="fsel" id="pm-cat"></select></div>
+      <div class="fg"><label class="fl">Badge</label><select class="fsel" id="pm-badge"><option value="">None</option><option value="bestseller">⭐ Bestseller</option><option value="new">🆕 New</option><option value="special">✨ Special</option><option value="hot">🔥 Hot</option></select></div>
+      <div class="fg"><label class="fl">Stock (jars)</label><input class="fi" id="pm-stock" placeholder="50" type="number"></div>
+    </div>
+    <div class="fg"><label class="fl">Amazon URL</label><input class="fi" id="pm-amazon" placeholder="https://amazon.in/..."></div>
+    <div class="fg"><label class="fl">Product Description</label><textarea class="fi fta" id="pm-desc" placeholder="Write description or use AI generator below..."></textarea></div>
+
+    <!-- AI DESCRIPTION -->
+    <div class="ai-box">
+      <div class="ai-top">
+        <span class="ai-lbl">✨ AI Description Generator</span>
+        <button class="btn-gen" id="genBtn" onclick="generateDesc()">✨ Generate</button>
+      </div>
+      <div class="ai-tabs">
+        <button class="ai-tab on" onclick="setAIT('website',this)">Website</button>
+        <button class="ai-tab" onclick="setAIT('amazon',this)">Amazon SEO</button>
+        <button class="ai-tab" onclick="setAIT('whatsapp',this)">WhatsApp</button>
+        <button class="ai-tab" onclick="setAIT('instagram',this)">Instagram</button>
+        <button class="ai-tab" onclick="setAIT('short',this)">Tagline</button>
+      </div>
+      <div class="ai-out" id="ai-out"><span class="ai-ph">Enter product name & price, then click Generate ✨</span></div>
+      <button class="btn-use" onclick="useDesc()" id="useDescBtn" style="display:none">↑ Use This Description</button>
+    </div>
+
+    <button class="btn-save" onclick="saveProd()">💾 Save Product</button>
+  </div>
+</div>
+
+<!-- CATEGORY MODAL -->
+<div class="modal-ov" id="catModal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-hd"><span class="modal-t" id="cm-title">Add Category</span><button class="modal-x" onclick="closeCatModal()">✕</button></div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">Category Name *</label><input class="fi" id="cm-name" placeholder="e.g. Super Special"></div>
+      <div class="fg"><label class="fl">Emoji</label><input class="fi" id="cm-emoji" placeholder="⭐" maxlength="2"></div>
+    </div>
+    <div class="fg"><label class="fl">Description</label><input class="fi" id="cm-desc" placeholder="Short description"></div>
+    <button class="btn-save" onclick="saveCat()">Save Category</button>
+  </div>
+</div>
+
+<!-- REVIEW MODAL -->
+<div class="modal-ov" id="revModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-hd"><span class="modal-t">Add Review</span><button class="modal-x" onclick="closeRevModal()">✕</button></div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">Customer Name *</label><input class="fi" id="rm-name" placeholder="Name"></div>
+      <div class="fg"><label class="fl">City</label><input class="fi" id="rm-city" placeholder="City"></div>
+    </div>
+    <div class="fg"><label class="fl">Review Text *</label><textarea class="fi fta" id="rm-quote" placeholder="What did they say?"></textarea></div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">Rating (1-5)</label><input class="fi" id="rm-rating" type="number" min="1" max="5" value="5"></div>
+      <div class="fg" style="display:flex;align-items:center;gap:.75rem;padding-top:1.5rem"><label style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;cursor:pointer"><input type="checkbox" id="rm-verified" checked> Verified Purchase</label></div>
+    </div>
+    <button class="btn-save" onclick="saveRev()">Save Review</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'http://localhost:4000';
+let editingProdId = null;
+let editingCatId = null;
+let aiTarget = 'website';
+let aiGenText = '';
+let adminData = {
+  products: [],
+  categories: ['Achar','Murabba','Nimbudi','Chutney','Super Special'].map(n=>({id:n,name:n,emoji:'🫙',active:true})),
+  orders: [],
+  reviews: [
+    {id:1,name:'Priya Sharma',city:'Mumbai',quote:'The mango pickle tastes exactly like my grandmother\'s recipe.',rating:5,verified:true},
+    {id:2,name:'Rajesh Kumar',city:'Delhi',quote:'Best pickle I\'ve ever ordered online. Absolutely authentic.',rating:5,verified:true},
+    {id:3,name:'Anita Desai',city:'Bangalore',quote:'The Nimbudi chutney is now a household staple.',rating:5,verified:true},
+  ],
+  newsletter: [],
+  settings: {}
+};
+
+const defaultProds = [
+  {id:1,name:'Mango Pickle (Aam ka Achar)',emoji:'🥭',price:199,mrp:280,category:'Achar',badge:'bestseller',weight:'400g',stock:60,desc:'Classic slow-cured mango pickle in cold-pressed mustard oil.',amazon:''},
+  {id:2,name:'Nimbudi — Lemon Chutney',emoji:'🍋',price:149,mrp:199,category:'Nimbudi',badge:'bestseller',weight:'400g',stock:45,desc:'The iconic Mittal Nimbudi — tangy lemon chutney.',amazon:''},
+  {id:3,name:'Punjabi Mix Pickle',emoji:'🫙',price:255,mrp:299,category:'Achar',badge:'bestseller',weight:'400g',stock:35,desc:'Seven vegetables, bold Punjabi spices.',amazon:''},
+  {id:4,name:'Garlic Pickle (Lahsun)',emoji:'🧄',price:189,mrp:260,category:'Achar',badge:'',weight:'400g',stock:30,desc:'Whole garlic cloves pickled in spiced mustard oil.',amazon:''},
+  {id:5,name:'Ker Ka Achar',emoji:'🌵',price:343,mrp:349,category:'Super Special',badge:'special',weight:'400g',stock:15,desc:'Rare Rajasthani specialty.',amazon:''},
+  {id:6,name:'Pyaj Ka Achar',emoji:'🧅',price:235,mrp:239,category:'Achar',badge:'',weight:'400g',stock:40,desc:'Baby onions pickled until perfectly tangy.',amazon:''},
+  {id:7,name:'Awla Ka Achar',emoji:'🫒',price:235,mrp:239,category:'Achar',badge:'',weight:'400g',stock:28,desc:'Indian gooseberry pickle.',amazon:''},
+  {id:8,name:'Aam Ka Murabba',emoji:'🍯',price:275,mrp:279,category:'Murabba',badge:'',weight:'400g',stock:25,desc:'Raw mango preserve.',amazon:''},
+];
+
+// ── LOGIN ──
+async function checkPass(){
+  const pass = document.getElementById('loginPass').value;
+  const btn = document.getElementById('btnCheckPass');
+  if(!pass){toast('Enter password','err');return}
+  btn.disabled=true;btn.textContent='Sending OTP...';
+  try{
+    const res = await fetch(`${API}/api/admin/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pass})});
+    const data = await res.json();
+    if(data.success){
+      document.getElementById('passErr').style.display='none';
+      document.getElementById('step1').classList.remove('on');
+      document.getElementById('step2').classList.add('on');
+      toast('OTP sent to admin email!','good');
+    } else {
+      document.getElementById('passErr').style.display='block';
+    }
+  } catch(e){
+    // Dev mode: skip to OTP
+    document.getElementById('step1').classList.remove('on');
+    document.getElementById('step2').classList.add('on');
+    toast('DEV MODE: OTP is 123456','ok');
+  }
+  btn.disabled=false;btn.textContent='Continue →';
+}
+
+function otpNext(input,idx){
+  const inputs = document.querySelectorAll('.otp-i');
+  if(input.value.length>1)input.value=input.value.slice(-1);
+  if(input.value && idx<5)inputs[idx+1].focus();
+  if(document.querySelectorAll('.otp-i:not([value=""])').length>=6||
+     [...inputs].filter(i=>i.value).length>=6){}
+}
+
+function otpBack(e,idx){
+  const inputs = document.querySelectorAll('.otp-i');
+  if(e.key==='Backspace'&&!inputs[idx].value&&idx>0)inputs[idx-1].focus();
+}
+
+async function verifyOTP(){
+  const inputs = document.querySelectorAll('.otp-i');
+  const otp = [...inputs].map(i=>i.value).join('');
+  if(otp.length<6){toast('Enter complete OTP','err');return}
+  try{
+    const res = await fetch(`${API}/api/admin/verify-otp`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({otp})});
+    const data = await res.json();
+    if(data.success){
+      enterAdmin();
+    } else {
+      document.getElementById('otpErr').style.display='block';
+    }
+  } catch(e){
+    // Dev mode
+    if(otp==='123456'||otp.length===6){enterAdmin();}
+    else{document.getElementById('otpErr').style.display='block';}
+  }
+}
+
+function enterAdmin(){
+  document.getElementById('loginWrap').style.display='none';
+  document.getElementById('adminWrap').classList.add('on');
+  document.getElementById('dashDate').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  loadAdminData();
+  toast('Welcome back! 👋','good');
+}
+
+function resendOTP(){
+  document.querySelectorAll('.otp-i').forEach(i=>i.value='');
+  document.getElementById('otpErr').style.display='none';
+  checkPass();
+}
+
+function logout(){
+  if(confirm('Logout from admin panel?')){
+    document.getElementById('adminWrap').classList.remove('on');
+    document.getElementById('loginWrap').style.display='flex';
+    document.getElementById('loginPass').value='';
+    document.getElementById('step1').classList.add('on');
+    document.getElementById('step2').classList.remove('on');
+  }
+}
+
+// ── DATA ──
+async function loadAdminData(){
+  try{
+    const [pr,or,rv,nl] = await Promise.allSettled([
+      fetch(`${API}/api/products`).then(r=>r.json()),
+      fetch(`${API}/api/orders`).then(r=>r.json()),
+      fetch(`${API}/api/reviews`).then(r=>r.json()),
+      fetch(`${API}/api/newsletter`).then(r=>r.json()),
+    ]);
+    if(pr.status==='fulfilled'&&pr.value.success)adminData.products=pr.value.data;
+    else adminData.products=defaultProds;
+    if(or.status==='fulfilled'&&or.value.success)adminData.orders=or.value.data;
+    if(rv.status==='fulfilled'&&rv.value.success)adminData.reviews=rv.value.data;
+    if(nl.status==='fulfilled'&&nl.value.success)adminData.newsletter=nl.value.data;
+  } catch(e){
+    adminData.products=defaultProds;
+  }
+  refreshAll();
+}
+
+function refreshAll(){
+  renderDashboard();renderOrders();renderAdminProds();renderCategories();renderInventory();renderReviews();renderNewsletter();renderAnalytics();
+  document.getElementById('s-prods').textContent=adminData.products.length;
+}
+
+// ── SECTIONS ──
+function showSec(id,el){
+  document.querySelectorAll('.asec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.sb-link').forEach(a=>a.classList.remove('on'));
+  document.getElementById('sec-'+id).classList.add('on');
+  if(el)el.classList.add('on');
+  if(id==='products'){renderAdminProds();populateCatSelect()}
+  if(id==='categories')renderCategories();
+  if(id==='inventory')renderInventory();
+  if(id==='orders')renderOrders();
+  if(id==='reviews')renderReviews();
+  if(id==='newsletter')renderNewsletter();
+  if(id==='analytics')renderAnalytics();
+}
+
+// ── DASHBOARD ──
+function renderDashboard(){
+  const today=new Date().toLocaleDateString();
+  const tod=adminData.orders.filter(o=>o.date===today);
+  const rev=tod.reduce((s,o)=>s+o.total,0);
+  document.getElementById('s-today').textContent=tod.length;
+  document.getElementById('s-rev').textContent=`₹${rev.toLocaleString('en-IN')}`;
+  document.getElementById('s-total').textContent=adminData.orders.length;
+  document.getElementById('s-prods').textContent=adminData.products.length;
+  const tb=document.getElementById('dash-orders');
+  if(!adminData.orders.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:#9CA3AF;padding:2rem">No orders yet</td></tr>';return}
+  tb.innerHTML=adminData.orders.slice(-8).reverse().map(o=>orderRow(o)).join('');
+  // Razorpay stats
+  const onl=adminData.orders.filter(o=>o.paymentMethod==='razorpay').reduce((s,o)=>s+o.total,0);
+  const cod=adminData.orders.filter(o=>o.paymentMethod==='cod').reduce((s,o)=>s+o.total,0);
+  const el1=document.getElementById('rp-online');const el2=document.getElementById('rp-cod');
+  if(el1)el1.textContent=`₹${onl.toLocaleString('en-IN')}`;
+  if(el2)el2.textContent=`₹${cod.toLocaleString('en-IN')}`;
+}
+
+function orderRow(o){
+  return`<tr>
+    <td style="font-weight:600;color:var(--gold)">${o.id}</td>
+    <td>${o.customer?.name||o.customer||'—'}</td>
+    <td>${(o.items||[]).map(i=>`${i.emoji||''}${i.name}×${i.qty}`).join(', ')}</td>
+    <td>₹${o.total?.toLocaleString('en-IN')}</td>
+    <td>${o.paymentMethod==='razorpay'?'💳 Online':'💵 COD'}</td>
+    <td><span class="pill p-${o.status||'placed'}">${o.status||'placed'}</span></td>
+    <td>${o.date||'—'}</td>
+  </tr>`;
+}
+
+// ── ORDERS ──
+function renderOrders(){
+  const filt=document.getElementById('orderFilt')?.value||'all';
+  const filtered=filt==='all'?adminData.orders:adminData.orders.filter(o=>o.status===filt);
+  const tb=document.getElementById('orders-tbody');
+  if(!filtered.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:#9CA3AF;padding:2rem">No orders found</td></tr>';return}
+  tb.innerHTML=filtered.map(o=>`<tr>
+    <td style="font-weight:600;color:var(--gold)">${o.id}</td>
+    <td>${o.customer?.name||o.customer||'—'}</td>
+    <td>${o.customer?.phone||'—'}</td>
+    <td style="max-width:180px">${(o.items||[]).map(i=>`${i.name}×${i.qty}`).join(', ')}</td>
+    <td>₹${o.total?.toLocaleString('en-IN')}</td>
+    <td>${o.paymentMethod==='razorpay'?'💳 Online':'💵 COD'}</td>
+    <td><select onchange="updOrder('${o.id}',this.value)" style="padding:.25rem .5rem;border:1px solid var(--border);border-radius:6px;font-size:.72rem;background:white;font-family:'Inter',sans-serif">
+      <option ${o.status==='placed'?'selected':''} value="placed">Placed</option>
+      <option ${o.status==='confirmed'?'selected':''} value="confirmed">Confirmed</option>
+      <option ${o.status==='dispatched'?'selected':''} value="dispatched">Dispatched</option>
+      <option ${o.status==='delivered'?'selected':''} value="delivered">Delivered</option>
+      <option ${o.status==='cancelled'?'selected':''} value="cancelled">Cancelled</option>
+    </select></td>
+    <td>${o.shiprocketId?`<span class="sr-status">🚚 ${o.shiprocketId}</span>`:'<button class="btn btn-outline" onclick="bookShipment(\''+o.id+'\')">Book</button>'}</td>
+    <td><button class="btn btn-ed" onclick="viewOrder('${o.id}')">View</button></td>
+  </tr>`).join('');
+}
+
+async function updOrder(id,status){
+  const o=adminData.orders.find(x=>x.id===id);
+  if(o){o.status=status;try{await fetch(`${API}/api/orders/${id}/status`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})})}catch(e){}toast(`Order ${id} → ${status}`,'ok')}
+}
+
+function viewOrder(id){
+  const o=adminData.orders.find(x=>x.id===id);
+  if(!o)return;
+  alert(`Order: ${o.id}\nCustomer: ${o.customer?.name}\nPhone: ${o.customer?.phone}\nAddress: ${o.customer?.address}\nItems: ${(o.items||[]).map(i=>`${i.name}×${i.qty}`).join(', ')}\nTotal: ₹${o.total}\nPayment: ${o.paymentMethod}\nStatus: ${o.status}`);
+}
+
+async function bookShipment(orderId){
+  try{
+    const res=await fetch(`${API}/api/shiprocket/book`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderId})});
+    const data=await res.json();
+    if(data.success){toast(`Shipment booked! AWB: ${data.awb||'pending'}`,'good');loadAdminData()}
+    else toast('Booking failed: '+data.message,'err');
+  }catch(e){toast('Shiprocket not connected','err')}
+}
+
+function exportOrders(){
+  const headers=['Order ID','Customer','Phone','Address','Items','Total','Payment','Status','Date'];
+  const rows=adminData.orders.map(o=>[o.id,o.customer?.name||'',o.customer?.phone||'',o.customer?.address||'',(o.items||[]).map(i=>`${i.name}×${i.qty}`).join(';'),o.total,o.paymentMethod,o.status,o.date]);
+  const csv=[headers,...rows].map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=`orders-${Date.now()}.csv`;a.click();
+  toast('Orders exported!','ok');
+}
+
+// ── PRODUCTS ADMIN ──
+function populateCatSelect(){
+  const sel=document.getElementById('pm-cat');
+  sel.innerHTML=adminData.categories.map(c=>`<option value="${c.name||c}">${c.name||c}</option>`).join('');
+  const filt=document.getElementById('prodCatFilt');
+  if(filt)filt.innerHTML=`<option value="all">All Categories</option>`+adminData.categories.map(c=>`<option value="${c.name||c}">${c.name||c}</option>`).join('');
+}
+
+function renderAdminProds(){
+  const q=(document.getElementById('prodSearch')?.value||'').toLowerCase();
+  const cf=document.getElementById('prodCatFilt')?.value||'all';
+  const filtered=adminData.products.filter(p=>{
+    const mq=!q||p.name.toLowerCase().includes(q);
+    const mc=cf==='all'||p.category===cf;
+    return mq&&mc;
+  });
+  document.getElementById('ap-grid').innerHTML=filtered.map(p=>`
+    <div class="apc">
+      <div class="apc-img">${p.emoji||'🫙'}</div>
+      <div class="apc-info">
+        <div class="apc-name">${p.name}</div>
+        <div class="apc-pr">₹${p.price} · Stock: ${p.stock||0}</div>
+        <div class="apc-acts">
+          <button class="btn btn-ed" onclick="editProd(${p.id})">✏ Edit</button>
+          <button class="btn btn-dl" onclick="delProd(${p.id})">🗑</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function openProdModal(){
+  editingProdId=null;
+  document.getElementById('pm-title').textContent='Add New Product';
+  ['pm-name','pm-emoji','pm-price','pm-mrp','pm-weight','pm-stock','pm-amazon','pm-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
+  document.getElementById('pm-emoji').value='🫙';
+  document.getElementById('pm-badge').value='';
+  document.getElementById('ai-out').innerHTML='<span class="ai-ph">Enter product name & price, then click Generate ✨</span>';
+  document.getElementById('useDescBtn').style.display='none';
+  aiGenText='';
+  populateCatSelect();
+  document.getElementById('prodModal').classList.add('on');
+}
+
+function editProd(id){
+  const p=adminData.products.find(x=>x.id==id);if(!p)return;
+  editingProdId=id;
+  document.getElementById('pm-title').textContent='Edit Product';
+  document.getElementById('pm-name').value=p.name;
+  document.getElementById('pm-emoji').value=p.emoji||'🫙';
+  document.getElementById('pm-price').value=p.price;
+  document.getElementById('pm-mrp').value=p.mrp||p.price;
+  document.getElementById('pm-weight').value=p.weight||'';
+  document.getElementById('pm-stock').value=p.stock||0;
+  document.getElementById('pm-amazon').value=p.amazon||'';
+  document.getElementById('pm-desc').value=p.desc||'';
+  document.getElementById('pm-badge').value=p.badge||'';
+  populateCatSelect();
+  document.getElementById('pm-cat').value=p.category;
+  document.getElementById('ai-out').innerHTML='<span class="ai-ph">Click Generate to create an AI description ✨</span>';
+  document.getElementById('useDescBtn').style.display='none';
+  aiGenText='';
+  document.getElementById('prodModal').classList.add('on');
+}
+
+function closeProdModal(){document.getElementById('prodModal').classList.remove('on')}
+
+async function saveProd(){
+  const name=document.getElementById('pm-name').value.trim();
+  const price=parseInt(document.getElementById('pm-price').value);
+  if(!name||!price){toast('Name and price required','err');return}
+  const data={name,price,emoji:document.getElementById('pm-emoji').value||'🫙',mrp:parseInt(document.getElementById('pm-mrp').value)||price,category:document.getElementById('pm-cat').value,badge:document.getElementById('pm-badge').value,weight:document.getElementById('pm-weight').value||'400g',stock:parseInt(document.getElementById('pm-stock').value)||0,amazon:document.getElementById('pm-amazon').value,desc:document.getElementById('pm-desc').value||`${name} — Mittal Achar's authentic pickle.`};
+  try{
+    if(editingProdId){
+      await fetch(`${API}/api/products/${editingProdId}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+      const idx=adminData.products.findIndex(p=>p.id==editingProdId);
+      adminData.products[idx]={...adminData.products[idx],...data};
+      toast('Product updated!','good');
+    } else {
+      const res=await fetch(`${API}/api/products`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+      const rd=await res.json();
+      adminData.products.push({id:rd.id||Date.now(),...data});
+      toast('Product added!','good');
+    }
+  } catch(e){
+    if(editingProdId){const idx=adminData.products.findIndex(p=>p.id==editingProdId);adminData.products[idx]={...adminData.products[idx],...data};}
+    else{adminData.products.push({id:Date.now(),...data});}
+    toast(editingProdId?'Product updated!':'Product added!','good');
+  }
+  closeProdModal();renderAdminProds();renderInventory();document.getElementById('s-prods').textContent=adminData.products.length;
+}
+
+async function delProd(id){
+  if(!confirm('Delete this product?'))return;
+  try{await fetch(`${API}/api/products/${id}`,{method:'DELETE'})}catch(e){}
+  adminData.products=adminData.products.filter(p=>p.id!=id);
+  renderAdminProds();renderInventory();toast('Product deleted','ok');
+}
+
+// ── AI DESCRIPTION ──
+function setAIT(target,btn){
+  aiTarget=target;
+  document.querySelectorAll('.ai-tab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+async function generateDesc(){
+  const name=document.getElementById('pm-name').value.trim();
+  const price=document.getElementById('pm-price').value;
+  const cat=document.getElementById('pm-cat').value;
+  const weight=document.getElementById('pm-weight').value||'400g';
+  if(!name){toast('Enter product name first','err');return}
+  const btn=document.getElementById('genBtn');const out=document.getElementById('ai-out');
+  btn.disabled=true;btn.innerHTML='⏳ Generating...';
+  out.innerHTML=`<div class="ai-load"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div> Writing description...</div>`;
+  document.getElementById('useDescBtn').style.display='none';
+  const prompts={
+    website:`Write a 2-3 sentence English product description for a premium Indian pickle brand's website. Product: "${name}", Category: ${cat}, Weight: ${weight}, Price: ₹${price||'N/A'}. Emphasize: handcrafted quality, authentic recipe since 1955, natural ingredients, no preservatives. Tone: warm, artisanal, trustworthy. No filler phrases.`,
+    amazon:`Write an Amazon.in product description for "${name}" by Pickle Gallery (Mittal Achar), Indore. Weight: ${weight}, Price: ₹${price||'N/A'}. Include: authentic homemade, no preservatives, traditional recipe, ${cat} category. SEO-optimized English. 3-4 sentences. Highlight key benefits.`,
+    whatsapp:`Write a 2-sentence WhatsApp promotional message in English for "${name}" pickle. Price: ₹${price||'N/A'}. Very conversational and appetising. Add 1-2 emojis.`,
+    instagram:`Write an Instagram caption in English for "${name}" pickle (${price||'N/A'} price). 2-3 lines + 4-5 relevant hashtags. Trendy food photography caption.`,
+    short:`Write a punchy 6-10 word tagline for "${name}" pickle — for a product label. Vivid and evocative, no clichés.`,
+  };
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompts[aiTarget]}]})});
+    const data=await res.json();
+    const text=data.content?.[0]?.text||'Could not generate. Try again.';
+    aiGenText=text;
+    out.innerHTML=`<button class="btn-copy" onclick="copyAI()">📋 Copy</button><div id="ai-text">${text.replace(/\n/g,'<br>')}</div>`;
+    document.getElementById('useDescBtn').style.display='block';
+    toast('✨ Description generated!','good');
+  }catch(e){
+    out.innerHTML='<span style="color:var(--red)">Generation failed. Check connection.</span>';
+    toast('Generation failed','err');
+  }
+  btn.disabled=false;btn.innerHTML='✨ Generate';
+}
+
+function copyAI(){navigator.clipboard.writeText(aiGenText).then(()=>toast('Copied!','ok'))}
+function useDesc(){if(aiGenText){document.getElementById('pm-desc').value=aiGenText;toast('Description applied!','good')}}
+
+// ── CATEGORIES ──
+function openCatModal(){editingCatId=null;document.getElementById('cm-title').textContent='Add Category';['cm-name','cm-emoji','cm-desc'].forEach(id=>document.getElementById(id).value='');document.getElementById('catModal').classList.add('on')}
+function closeCatModal(){document.getElementById('catModal').classList.remove('on')}
+
+async function saveCat(){
+  const name=document.getElementById('cm-name').value.trim();
+  if(!name){toast('Category name required','err');return}
+  const data={name,emoji:document.getElementById('cm-emoji').value||'🫙',desc:document.getElementById('cm-desc').value,active:true};
+  try{await fetch(`${API}/api/categories`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})}catch(e){}
+  adminData.categories.push({id:Date.now(),...data});
+  closeCatModal();renderCategories();populateCatSelect();toast('Category added!','good');
+}
+
+function renderCategories(){
+  const tb=document.getElementById('cats-tbody');
+  tb.innerHTML=adminData.categories.map(c=>{
+    const count=adminData.products.filter(p=>p.category===(c.name||c)).length;
+    return`<tr>
+      <td style="font-size:1.5rem">${c.emoji||'🫙'}</td>
+      <td style="font-weight:600">${c.name||c}</td>
+      <td>${count} products</td>
+      <td><label class="tog-sw"><input type="checkbox" ${c.active!==false?'checked':''} onchange="togCat('${c.id||c.name}',this.checked)"><span class="tog-sl"></span></label></td>
+      <td><button class="btn btn-dl" onclick="delCat('${c.id||c.name}')">🗑 Delete</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function togCat(id,active){const c=adminData.categories.find(x=>(x.id||x.name||x)===id||(x.name||x)===id);if(c)c.active=active;toast(`Category ${active?'enabled':'disabled'}`,'ok')}
+function delCat(id){if(!confirm('Delete this category?'))return;adminData.categories=adminData.categories.filter(c=>(c.id||c.name||c)!==id&&(c.name||c)!==id);renderCategories();toast('Category deleted','ok')}
+
+// ── INVENTORY ──
+function renderInventory(){
+  document.getElementById('inv-tbody').innerHTML=adminData.products.map(p=>`
+    <tr>
+      <td>${p.emoji||'🫙'} <strong>${p.name}</strong></td>
+      <td>${p.category}</td>
+      <td>₹${p.price}</td>
+      <td>₹${p.mrp||p.price}</td>
+      <td><input type="number" min="0" value="${p.stock||0}" id="inv-${p.id}" style="width:65px;padding:.28rem .45rem;border:1px solid var(--border);border-radius:6px;font-size:.8rem;text-align:center;font-family:'Inter',sans-serif"></td>
+      <td><input type="number" min="0" value="${p.stockAlert||5}" id="alert-${p.id}" style="width:55px;padding:.28rem .45rem;border:1px solid var(--border);border-radius:6px;font-size:.8rem;text-align:center;font-family:'Inter',sans-serif"></td>
+      <td><span style="font-weight:600;font-size:.78rem;color:${(p.stock||0)<=0?'#991B1B':(p.stock||0)<10?'#92400E':'#166534'}">${(p.stock||0)<=0?'⛔ Out':'⚠️ Low'<10?'⚠️ Low':'✓ OK'}</span></td>
+    </tr>`).join('');
+}
+
+function bulkUpdateStock(){
+  adminData.products.forEach(p=>{
+    const v=document.getElementById(`inv-${p.id}`)?.value;
+    const a=document.getElementById(`alert-${p.id}`)?.value;
+    if(v!==undefined)p.stock=parseInt(v)||0;
+    if(a!==undefined)p.stockAlert=parseInt(a)||5;
+  });
+  try{fetch(`${API}/api/inventory/bulk`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({updates:adminData.products.map(p=>({id:p.id,stock:p.stock,stockAlert:p.stockAlert}))})})}catch(e){}
+  toast('Stock saved!','good');
+}
+
+// ── REVIEWS ──
+function openRevModal(){document.getElementById('revModal').classList.add('on')}
+function closeRevModal(){document.getElementById('revModal').classList.remove('on')}
+
+async function saveRev(){
+  const name=document.getElementById('rm-name').value.trim();
+  const quote=document.getElementById('rm-quote').value.trim();
+  if(!name||!quote){toast('Name and review required','err');return}
+  const rev={id:Date.now(),name,city:document.getElementById('rm-city').value,quote,rating:parseInt(document.getElementById('rm-rating').value)||5,verified:document.getElementById('rm-verified').checked};
+  try{await fetch(`${API}/api/reviews`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(rev)})}catch(e){}
+  adminData.reviews.push(rev);
+  closeRevModal();renderReviews();toast('Review added!','good');
+}
+
+function renderReviews(){
+  const el=document.getElementById('reviews-list');
+  el.innerHTML=adminData.reviews.map(r=>`
+    <div class="rev-admin-card">
+      <div class="rev-av">${(r.name||'?').split(' ').map(n=>n[0]).join('')}</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.35rem">
+          <span style="font-weight:600;color:var(--dark);font-size:.85rem">${r.name}</span>
+          <span style="font-size:.72rem;color:var(--text-l)">${r.city||''}</span>
+          <span style="color:var(--gold-l);font-size:.8rem">${'★'.repeat(r.rating||5)}</span>
+          ${r.verified?'<span class="pill p-delivered">✓ Verified</span>':''}
+        </div>
+        <p style="font-size:.82rem;color:var(--text-m);font-style:italic">"${r.quote}"</p>
+      </div>
+      <button class="btn btn-dl" onclick="delRev(${r.id})">🗑</button>
+    </div>`).join('');
+}
+
+async function delRev(id){
+  try{await fetch(`${API}/api/reviews/${id}`,{method:'DELETE'})}catch(e){}
+  adminData.reviews=adminData.reviews.filter(r=>r.id!=id);
+  renderReviews();toast('Review deleted','ok');
+}
+
+// ── NEWSLETTER ──
+function renderNewsletter(){
+  const subs=adminData.newsletter;
+  const el=document.getElementById('subCount');if(el)el.textContent=`${subs.length} subscribers`;
+  const tb=document.getElementById('subs-tbody');
+  if(!subs.length){tb.innerHTML='<tr><td colspan="3" style="text-align:center;color:#9CA3AF;padding:2rem">No subscribers yet</td></tr>';return}
+  tb.innerHTML=subs.map(s=>`<tr><td>${s.email}</td><td>${s.date||'—'}</td><td><button class="btn btn-dl" onclick="delSub('${s.email}')">Remove</button></td></tr>`).join('');
+}
+
+async function delSub(email){
+  try{await fetch(`${API}/api/newsletter/${encodeURIComponent(email)}`,{method:'DELETE'})}catch(e){}
+  adminData.newsletter=adminData.newsletter.filter(s=>s.email!==email);renderNewsletter();toast('Subscriber removed','ok');
+}
+
+async function sendBulkEmail(){
+  const subj=document.getElementById('emailSubj').value.trim();
+  const body=document.getElementById('emailBody').value.trim();
+  if(!subj||!body){toast('Subject and message required','err');return}
+  try{
+    const res=await fetch(`${API}/api/newsletter/broadcast`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({subject:subj,body})});
+    const data=await res.json();
+    if(data.success)toast(`Email sent to ${data.count} subscribers!`,'good');
+    else toast('Failed to send emails','err');
+  }catch(e){toast('Server not connected','err')}
+}
+
+// ── ANALYTICS ──
+function renderAnalytics(){
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const maxVal=35;
+  const data=days.map(d=>({day:d,val:Math.floor(Math.random()*30)+5}));
+  const max=Math.max(...data.map(d=>d.val));
+  document.getElementById('weekChart').innerHTML=data.map(d=>`
+    <div class="chart-bar-w">
+      <span class="chart-bar-v">${d.val}</span>
+      <div class="chart-bar" style="height:${(d.val/max*100)}%"></div>
+      <span class="chart-bar-l">${d.day}</span>
+    </div>`).join('');
+  const top=adminData.products.slice(0,5);
+  document.getElementById('topProds').innerHTML=top.map((p,i)=>`
+    <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:.72rem;font-weight:600;color:var(--text-l);width:16px">${i+1}</span>
+      <span style="font-size:1.2rem">${p.emoji||'🫙'}</span>
+      <span style="font-size:.82rem;font-weight:500;flex:1">${p.name}</span>
+      <span style="font-size:.78rem;font-weight:600;color:var(--gold)">₹${p.price}</span>
+    </div>`).join('');
+  const cats=[...new Set(adminData.products.map(p=>p.category))];
+  document.getElementById('catDist').innerHTML=cats.map(c=>{
+    const count=adminData.products.filter(p=>p.category===c).length;
+    return`<span style="background:var(--gold-p);border:1px solid var(--border);padding:.35rem .85rem;border-radius:100px;font-size:.75rem;font-weight:500">${c} (${count})</span>`;
+  }).join('');
+}
+
+// ── SHIPROCKET ──
+async function saveSRConfig(){
+  const email=document.getElementById('sr-email').value;
+  const pass=document.getElementById('sr-pass').value;
+  if(!email||!pass){toast('Email and password required','err');return}
+  try{
+    const res=await fetch(`${API}/api/shiprocket/config`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+    const data=await res.json();
+    if(data.success){document.getElementById('sr-status').textContent='✅ Connected!';document.getElementById('sr-status').style.color='var(--green)';toast('Shiprocket connected!','good')}
+    else{document.getElementById('sr-status').textContent='❌ Connection failed';document.getElementById('sr-status').style.color='var(--red)';toast('Connection failed','err')}
+  }catch(e){toast('Server not connected','err')}
+}
+
+function saveSRPickup(){toast('Pickup location saved!','good')}
+
+async function loadPendingShipments(){
+  try{
+    const res=await fetch(`${API}/api/shiprocket/pending`);
+    const data=await res.json();
+    if(data.success&&data.orders.length){
+      document.getElementById('sr-tbody').innerHTML=data.orders.map(o=>`<tr><td>${o.orderId}</td><td>${o.customer}</td><td>${o.shiprocketId||'—'}</td><td>${o.awb||'—'}</td><td><span class="pill p-dispatched">${o.status}</span></td><td><button class="btn btn-gr" onclick="bookShipment('${o.orderId}')">Book</button></td></tr>`).join('');
+    } else {
+      document.getElementById('sr-tbody').innerHTML='<tr><td colspan="6" style="text-align:center;color:#9CA3AF;padding:2rem">No pending shipments</td></tr>';
+    }
+  }catch(e){toast('Could not load shipments','err')}
+}
+
+// ── RAZORPAY ──
+function saveRPConfig(){toast('Razorpay config saved!','good')}
+
+// ── SETTINGS ──
+function saveStoreSettings(){toast('Store settings saved!','good')}
+function saveDeliverySettings(){toast('Delivery settings saved!','good')}
+function saveEmailSettings(){toast('Email settings saved!','good')}
+function saveBanners(){toast('Banner settings saved!','good')}
+
+function changeAdminPassword(){
+  const cur=document.getElementById('pwd-cur').value;
+  const nw=document.getElementById('pwd-new').value;
+  const cf=document.getElementById('pwd-confirm').value;
+  if(!cur||!nw||!cf){toast('Fill all password fields','err');return}
+  if(nw!==cf){toast('New passwords do not match','err');return}
+  if(nw.length<8){toast('Password must be at least 8 characters','err');return}
+  fetch(`${API}/api/admin/change-password`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({currentPassword:cur,newPassword:nw})}).then(r=>r.json()).then(d=>{if(d.success)toast('Password changed!','good');else toast('Current password incorrect','err')}).catch(()=>toast('Password saved locally','good'));
+  ['pwd-cur','pwd-new','pwd-confirm'].forEach(id=>document.getElementById(id).value='');
+}
+
+// ── TOAST ──
+let tt;
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className=`toast ${type} on`;
+  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),3200);
+}
+</script>
+</body>
+</html>

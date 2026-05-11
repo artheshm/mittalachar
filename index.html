@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle Gallery — Mittal Achar Since 1955</title>
+<meta name="description" content="Handcrafted pickles, chutneys & murabbas from Indore. 100+ varieties, no preservatives, pan-India delivery.">
+<meta property="og:title" content="Pickle Gallery — Mittal Achar Since 1955">
+<meta property="og:description" content="Authentic handcrafted pickles from Indore. Shop online, pan-India delivery.">
+<meta property="og:image" content="https://picklegallery.in/og-image.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🫙</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#C8922A;--gold-l:#E8B84B;--gold-p:#FDF6E3;--gold-m:#F5E6C0;
+  --dark:#1A0E00;--dark-m:#2D1A00;--dark-l:#4A2D00;
+  --cream:#FFFDF7;--cream-d:#FAF5E4;--cream-m:#F5EDD0;
+  --text:#1A0E00;--text-m:#5C3D11;--text-l:#8B6234;
+  --border:#E8D5A0;--border-l:#F0E4C0;
+  --green:#166534;--green-b:#DCFCE7;
+  --red:#991B1B;--red-b:#FEE2E2;
+  --blue:#1D4ED8;--blue-b:#EFF6FF;
+  --sh:0 4px 24px rgba(26,14,0,.10);--sh-l:0 12px 48px rgba(26,14,0,.18);
+}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;line-height:1.6}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--cream-d)}::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px}
+a{text-decoration:none;color:inherit}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:900;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;height:68px;background:rgba(255,253,247,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-l);transition:box-shadow .3s}
+nav.scrolled{box-shadow:var(--sh)}
+.nav-brand{display:flex;align-items:center;gap:.75rem;cursor:pointer}
+.nav-lm{width:36px;height:36px;background:var(--dark);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.nav-bn{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;color:var(--dark);display:block;line-height:1.1}
+.nav-bs{font-size:.6rem;color:var(--text-l);text-transform:uppercase;letter-spacing:.12em;display:block}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:.83rem;font-weight:500;color:var(--text-m);cursor:pointer;transition:color .2s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1.5px;background:var(--gold);transition:width .3s}
+.nav-links a:hover{color:var(--gold)}.nav-links a:hover::after{width:100%}
+.nav-r{display:flex;align-items:center;gap:.75rem}
+.btn-cart{background:var(--dark);color:#fff;border:none;cursor:pointer;padding:.45rem 1.1rem;border-radius:100px;font-size:.8rem;font-weight:500;display:flex;align-items:center;gap:.45rem;transition:all .2s;font-family:'Inter',sans-serif}
+.btn-cart:hover{background:var(--dark-l);transform:translateY(-1px)}
+.cart-n{background:var(--gold);color:var(--dark);min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;padding:0 4px}
+.btn-ham{display:none;background:none;border:none;cursor:pointer;padding:.5rem}
+/* PAGES */
+.pg{display:none;min-height:100vh;padding-top:68px}.pg.on{display:block}
+#pg-home{padding-top:0}
+/* HERO */
+.hero{min-height:100vh;background:var(--dark);display:grid;grid-template-columns:1fr 1fr;position:relative;overflow:hidden}
+.hero-l{display:flex;flex-direction:column;justify-content:center;padding:7rem 4rem 5rem;position:relative;z-index:1}
+.hero-est{display:inline-flex;align-items:center;gap:.5rem;color:var(--gold-l);font-size:.72rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;margin-bottom:2rem}
+.hero-est::before,.hero-est::after{content:'';height:1px;width:20px;background:var(--gold-l);opacity:.5}
+.hero-h1{font-family:'Cormorant Garamond',serif;font-size:4.5rem;font-weight:700;color:#fff;line-height:1.05;margin-bottom:1.5rem}
+.hero-h1 em{color:var(--gold-l);font-style:italic}
+.hero-sub{color:rgba(255,255,255,.5);font-size:.95rem;line-height:1.8;max-width:430px;margin-bottom:3rem;font-weight:300}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:4rem}
+.btn-g{background:var(--gold);color:var(--dark);border:none;cursor:pointer;padding:.8rem 1.8rem;border-radius:100px;font-size:.87rem;font-weight:600;display:inline-flex;align-items:center;gap:.5rem;transition:all .25s;font-family:'Inter',sans-serif}
+.btn-g:hover{background:var(--gold-l);transform:translateY(-2px);box-shadow:0 8px 24px rgba(200,146,42,.4)}
+.btn-ol{background:transparent;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.2);cursor:pointer;padding:.8rem 1.8rem;border-radius:100px;font-size:.87rem;font-weight:500;display:inline-flex;align-items:center;gap:.5rem;transition:all .25s;font-family:'Inter',sans-serif}
+.btn-ol:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.4)}
+.btn-wa{background:#25D366;color:#fff;border:none;cursor:pointer;padding:.8rem 1.8rem;border-radius:100px;font-size:.87rem;font-weight:600;display:inline-flex;align-items:center;gap:.5rem;transition:all .25s;font-family:'Inter',sans-serif}
+.btn-wa:hover{background:#128C7E;transform:translateY(-2px)}
+.hero-stats{display:flex;gap:2.5rem}
+.hs-n{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold-l)}
+.hs-l{font-size:.72rem;color:rgba(255,255,255,.35);margin-top:.15rem;letter-spacing:.05em}
+.hero-r{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:2px}
+.hj{background:var(--dark-m);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;padding:2rem;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.hj::after{content:'';position:absolute;inset:0;background:var(--gold);opacity:0;transition:opacity .3s}
+.hj:hover::after{opacity:.06}
+.hj-em{font-size:3.2rem;display:block;transition:transform .3s}
+.hj:hover .hj-em{transform:scale(1.1)}
+.hj-n{font-size:.75rem;color:rgba(255,255,255,.45);text-align:center}
+.hj-p{font-size:.85rem;color:var(--gold-l);font-weight:600}
+.hj.feat{grid-column:span 2;background:var(--dark-l);flex-direction:row;gap:2rem;justify-content:flex-start;padding:2.5rem 3rem}
+.hj.feat .hj-em{font-size:4.5rem}
+.hj-fi{text-align:left}
+.hj-ft{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-l);border:1px solid var(--gold-l);display:inline-block;padding:.2rem .55rem;border-radius:100px;margin-bottom:.5rem}
+.hj-fn{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:.25rem}
+.hj-fd{font-size:.78rem;color:rgba(255,255,255,.4);max-width:260px;line-height:1.5}
+/* TRUST BAR */
+.trust-bar{background:var(--gold);overflow:hidden;height:42px;position:relative}
+.trust-track{display:flex;align-items:center;height:100%;animation:scroll-trust 30s linear infinite;white-space:nowrap;width:max-content}
+.ti{font-size:.75rem;font-weight:600;color:var(--dark);padding:0 2.5rem;display:flex;align-items:center;gap:.5rem;letter-spacing:.03em}
+.tsep{width:4px;height:4px;background:var(--dark);opacity:.25;border-radius:50%;flex-shrink:0}
+@keyframes scroll-trust{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+/* SECTIONS */
+.sec{padding:5.5rem 4rem}
+.sec-tag{display:inline-block;font-size:.68rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--gold);padding-bottom:4px;margin-bottom:1.2rem}
+.sec-h2{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:700;color:var(--dark);line-height:1.15;margin-bottom:1rem}
+.sec-p{color:var(--text-m);font-size:.92rem;max-width:500px;line-height:1.8}
+.sec-hd{margin-bottom:3rem}
+.sec-hd.ctr{text-align:center}.sec-hd.ctr .sec-p{margin:0 auto}
+/* CATS */
+.cats-sec{background:var(--cream-d);padding:4rem}
+.cat-grid{display:flex;gap:1rem;overflow-x:auto;padding-bottom:.5rem;scrollbar-width:none}
+.cat-grid::-webkit-scrollbar{display:none}
+.cat-chip{flex-shrink:0;background:white;border:1px solid var(--border);border-radius:100px;padding:.55rem 1.3rem;cursor:pointer;display:flex;align-items:center;gap:.55rem;font-size:.82rem;font-weight:500;color:var(--text-m);transition:all .2s;white-space:nowrap}
+.cat-chip:hover,.cat-chip.on{background:var(--dark);color:#fff;border-color:var(--dark)}
+.cat-n{background:var(--gold-m);color:var(--dark);font-size:.68rem;font-weight:600;padding:.1rem .4rem;border-radius:100px}
+.cat-chip.on .cat-n,.cat-chip:hover .cat-n{background:rgba(255,255,255,.2);color:#fff}
+/* PRODUCTS */
+#pg-products{background:var(--cream-d)}
+.prods-top{display:flex;align-items:center;justify-content:space-between;padding:2.5rem 4rem 0;flex-wrap:wrap;gap:1rem}
+.prods-h1{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;color:var(--dark)}
+.srch{display:flex;align-items:center;gap:.5rem;background:white;border:1px solid var(--border);border-radius:100px;padding:.45rem 1rem;min-width:210px}
+.srch input{border:none;outline:none;font-size:.83rem;color:var(--text);background:transparent;font-family:'Inter',sans-serif;width:100%}
+.srch input::placeholder{color:var(--text-l)}
+.filt-row{display:flex;gap:.5rem;padding:1.25rem 4rem;overflow-x:auto;scrollbar-width:none}
+.filt-row::-webkit-scrollbar{display:none}
+.fp{flex-shrink:0;padding:.35rem .95rem;border-radius:100px;border:1px solid var(--border);background:white;color:var(--text-m);font-size:.78rem;font-weight:500;cursor:pointer;transition:all .2s}
+.fp.on,.fp:hover{background:var(--dark);color:#fff;border-color:var(--dark)}
+.pg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:1.5rem;padding:0 4rem 5rem}
+.pc{background:white;border:1px solid var(--border-l);border-radius:16px;overflow:hidden;transition:all .3s;cursor:pointer}
+.pc:hover{transform:translateY(-5px);box-shadow:var(--sh-l);border-color:var(--gold)}
+.pc-img{height:185px;background:linear-gradient(135deg,var(--gold-p),var(--gold-m));display:flex;align-items:center;justify-content:center;font-size:4.8rem;position:relative}
+.pc-badge{position:absolute;top:.8rem;left:.8rem;font-size:.62rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.22rem .55rem;border-radius:100px}
+.b-bs{background:var(--dark);color:var(--gold-l)}
+.b-nw{background:var(--green);color:#fff}
+.b-sp{background:var(--red);color:#fff}
+.b-ho{background:#7C3AED;color:#fff}
+.pc-info{padding:1.1rem}
+.pc-cat{font-size:.68rem;color:var(--text-l);font-weight:500;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.08em}
+.pc-name{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:.25rem;line-height:1.3}
+.pc-desc{font-size:.77rem;color:var(--text-l);line-height:1.5;margin-bottom:.75rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pc-pr{display:flex;align-items:baseline;gap:.45rem;margin-bottom:.85rem}
+.pc-price{font-size:1.15rem;font-weight:700;color:var(--dark)}
+.pc-mrp{font-size:.78rem;color:var(--text-l);text-decoration:line-through}
+.pc-disc{font-size:.68rem;font-weight:700;color:var(--green);background:var(--green-b);padding:.12rem .38rem;border-radius:4px}
+.pc-foot{display:flex;gap:.5rem}
+.btn-atc{flex:1;background:var(--dark);color:#fff;border:none;cursor:pointer;padding:.6rem;border-radius:8px;font-size:.78rem;font-weight:600;transition:all .2s;font-family:'Inter',sans-serif}
+.btn-atc:hover{background:var(--dark-l)}
+.btn-amz{background:var(--gold-p);color:var(--dark);border:1px solid var(--border);cursor:pointer;padding:.6rem .8rem;border-radius:8px;font-size:.72rem;font-weight:600;transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap}
+.btn-amz:hover{background:var(--gold-m)}
+.no-res{grid-column:1/-1;text-align:center;padding:4rem 2rem;color:var(--text-l)}
+/* FEATURES */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem;max-width:980px;margin:0 auto}
+.fc{padding:2.25rem 1.75rem;border:1px solid var(--border);border-radius:16px;background:white;transition:all .3s}
+.fc:hover{border-color:var(--gold);box-shadow:var(--sh)}
+.fc-ic{width:50px;height:50px;border-radius:11px;background:var(--gold-p);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:1.4rem}
+.fc-t{font-weight:600;color:var(--dark);margin-bottom:.45rem;font-size:.92rem}
+.fc-d{font-size:.82rem;color:var(--text-m);line-height:1.7}
+/* REVIEWS */
+.rev-sec{background:var(--dark);padding:5.5rem 4rem}
+.rev-sec .sec-h2{color:#fff}
+.rev-sec .sec-tag{color:var(--gold-l);border-color:var(--gold-l)}
+.rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+.rc{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:1.75rem;transition:all .3s}
+.rc:hover{background:rgba(255,255,255,.08);border-color:rgba(200,146,42,.3)}
+.rc-stars{color:var(--gold-l);font-size:.85rem;margin-bottom:.9rem;letter-spacing:.1em}
+.rc-q{font-family:'Cormorant Garamond',serif;font-size:1rem;color:rgba(255,255,255,.82);line-height:1.65;margin-bottom:1.2rem;font-style:italic}
+.rc-au{display:flex;align-items:center;gap:.7rem}
+.rc-av{width:34px;height:34px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:var(--dark);flex-shrink:0}
+.rc-nm{font-size:.82rem;font-weight:600;color:#fff}
+.rc-ct{font-size:.72rem;color:rgba(255,255,255,.35)}
+.rc-v{font-size:.62rem;color:var(--gold-l);border:1px solid rgba(200,146,42,.3);padding:.12rem .45rem;border-radius:100px;margin-left:auto;white-space:nowrap}
+/* AMAZON */
+.amz-sec{background:var(--gold-p);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:5rem 4rem;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.amz-badge{display:inline-flex;align-items:center;gap:.55rem;background:var(--dark);color:var(--gold-l);padding:.35rem .95rem;border-radius:100px;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1.4rem}
+.amz-h{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:700;color:var(--dark);line-height:1.2;margin-bottom:1rem}
+.amz-p{color:var(--text-m);line-height:1.8;margin-bottom:2rem;font-size:.9rem}
+.amz-vis{background:white;border-radius:18px;border:1px solid var(--border);padding:2.5rem;text-align:center}
+.amz-lt{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:700;color:var(--dark);margin-bottom:.4rem}
+.amz-url{font-size:.75rem;color:var(--text-l);margin-bottom:1.75rem}
+.amz-pills{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
+.amz-pill{background:var(--gold-p);border:1px solid var(--border);color:var(--dark);font-size:.72rem;font-weight:500;padding:.28rem .7rem;border-radius:100px}
+/* ABOUT */
+#pg-about{background:var(--cream)}
+.about-grid{display:grid;grid-template-columns:3fr 2fr;gap:5rem;align-items:start;padding:5rem 4rem}
+.ab-tag{color:var(--gold);font-size:.68rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;margin-bottom:1rem}
+.ab-h{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:700;color:var(--dark);line-height:1.15;margin-bottom:2rem}
+.ab-h em{color:var(--gold);font-style:italic}
+.ab-p{color:var(--text-m);line-height:1.85;font-size:.92rem;margin-bottom:1.4rem}
+.ab-vis{background:var(--dark);border-radius:18px;padding:2.75rem;color:#fff;position:sticky;top:88px}
+.ab-yr{font-family:'Cormorant Garamond',serif;font-size:5rem;font-weight:700;color:var(--gold-l);line-height:1;margin-bottom:.45rem}
+.ab-yl{font-size:.7rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.15em;margin-bottom:2rem}
+.ab-vals{display:flex;flex-direction:column;gap:.85rem}
+.ab-val{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:.9rem 1.1rem;display:flex;align-items:center;gap:.9rem}
+.ab-vi{font-size:1.3rem;flex-shrink:0}
+.ab-vt{font-size:.82rem;font-weight:600;color:#fff;margin-bottom:.15rem}
+.ab-vd{font-size:.72rem;color:rgba(255,255,255,.35)}
+/* CONTACT */
+#pg-contact{background:var(--cream-d)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;padding:5rem 4rem;max-width:980px;margin:0 auto}
+.ci-h{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--dark);margin-bottom:.9rem}
+.ci-p{color:var(--text-m);line-height:1.8;margin-bottom:2rem;font-size:.88rem}
+.c-items{display:flex;flex-direction:column;gap:.85rem}
+.c-item{display:flex;align-items:center;gap:.9rem;padding:.9rem 1.1rem;background:white;border:1px solid var(--border);border-radius:11px;text-decoration:none;color:inherit;transition:all .2s}
+.c-item:hover{border-color:var(--gold);transform:translateX(4px)}
+.c-ic{width:38px;height:38px;border-radius:9px;background:var(--gold-p);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.c-l{font-size:.7rem;color:var(--text-l);font-weight:500;margin-bottom:.18rem;text-transform:uppercase;letter-spacing:.08em}
+.c-v{font-size:.87rem;font-weight:600;color:var(--dark)}
+.wa-card{background:white;border:1px solid var(--border);border-radius:16px;padding:1.75rem}
+.wc-h{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--dark);margin-bottom:1.4rem}
+.fg{margin-bottom:1rem}
+.fl{display:block;font-size:.7rem;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.38rem}
+.fi{width:100%;padding:.65rem .9rem;border:1px solid var(--border);border-radius:9px;background:var(--cream);color:var(--text);font-size:.85rem;font-family:'Inter',sans-serif;outline:none;transition:all .2s}
+.fi:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,146,42,.1)}
+.fi::placeholder{color:var(--text-l)}
+.fta{resize:vertical;min-height:85px}
+.btn-waf{width:100%;background:#25D366;color:#fff;border:none;cursor:pointer;padding:.85rem;border-radius:10px;font-size:.88rem;font-weight:600;margin-top:.65rem;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.55rem;font-family:'Inter',sans-serif}
+.btn-waf:hover{background:#128C7E}
+/* NEWSLETTER */
+.nl-sec{background:var(--dark);padding:4rem}
+.nl-inner{max-width:580px;margin:0 auto;text-align:center}
+.nl-h{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:#fff;margin-bottom:.75rem}
+.nl-p{color:rgba(255,255,255,.45);font-size:.87rem;margin-bottom:2rem;line-height:1.75}
+.nl-form{display:flex;gap:.75rem;max-width:440px;margin:0 auto}
+.nl-in{flex:1;padding:.7rem 1.1rem;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;border-radius:100px;font-size:.85rem;font-family:'Inter',sans-serif;outline:none;transition:all .2s}
+.nl-in::placeholder{color:rgba(255,255,255,.3)}
+.nl-in:focus{border-color:var(--gold);background:rgba(255,255,255,.09)}
+.btn-nl{background:var(--gold);color:var(--dark);border:none;cursor:pointer;padding:.7rem 1.5rem;border-radius:100px;font-size:.85rem;font-weight:600;white-space:nowrap;transition:all .2s;font-family:'Inter',sans-serif}
+.btn-nl:hover{background:var(--gold-l)}
+/* CART */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;opacity:0;pointer-events:none;transition:opacity .3s}
+.ov.on{opacity:1;pointer-events:all}
+.cart-sb{position:fixed;right:0;top:0;bottom:0;width:390px;background:var(--cream);z-index:1001;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-8px 0 48px rgba(26,14,0,.18)}
+.cart-sb.on{transform:translateX(0)}
+.cart-hd{padding:1.4rem;border-bottom:1px solid var(--border-l);display:flex;align-items:center;justify-content:space-between}
+.cart-hd-t{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700;color:var(--dark)}
+.x-btn{width:32px;height:32px;border-radius:50%;background:var(--cream-m);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;color:var(--text-m);transition:all .2s}
+.x-btn:hover{background:var(--border)}
+.cart-bd{flex:1;overflow-y:auto;padding:1.4rem}
+.cart-em{text-align:center;padding:3rem 1rem}
+.cart-em-ic{font-size:3rem;margin-bottom:.9rem;display:block}
+.cart-em-t{color:var(--text-m);font-size:.87rem}
+.ci-item{display:flex;gap:.9rem;padding-bottom:1.1rem;margin-bottom:1.1rem;border-bottom:1px solid var(--border-l)}
+.ci-th{width:56px;height:56px;border-radius:9px;flex-shrink:0;background:var(--gold-p);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.7rem}
+.ci-nm{font-weight:600;color:var(--dark);font-size:.87rem;margin-bottom:.2rem}
+.ci-pr{color:var(--gold);font-weight:700;margin-bottom:.45rem;font-size:.88rem}
+.qc{display:flex;align-items:center;gap:.7rem}
+.qb{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:white;cursor:pointer;font-size:.85rem;font-weight:600;color:var(--dark);display:flex;align-items:center;justify-content:center;transition:all .2s}
+.qb:hover{background:var(--dark);color:#fff;border-color:var(--dark)}
+.qn{font-weight:600;color:var(--dark);min-width:16px;text-align:center;font-size:.87rem}
+.cart-ft{padding:1.4rem;border-top:1px solid var(--border-l);background:white}
+.ct-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.1rem}
+.ct-l{font-size:.87rem;color:var(--text-m)}
+.ct-v{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:700;color:var(--dark)}
+.btn-co{width:100%;background:var(--dark);color:#fff;border:none;cursor:pointer;padding:.9rem;border-radius:11px;font-size:.88rem;font-weight:600;margin-bottom:.65rem;transition:all .2s;font-family:'Inter',sans-serif}
+.btn-co:hover{background:var(--dark-l);transform:translateY(-1px)}
+.btn-wac{width:100%;background:#25D366;color:#fff;border:none;cursor:pointer;padding:.9rem;border-radius:11px;font-size:.88rem;font-weight:600;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Inter',sans-serif}
+.btn-wac:hover{background:#128C7E}
+/* CHECKOUT */
+#pg-checkout{background:var(--cream-d)}
+.co-wrap{max-width:940px;margin:0 auto;padding:2.5rem 1.5rem;display:grid;grid-template-columns:1fr 360px;gap:1.75rem}
+.co-card{background:white;border:1px solid var(--border);border-radius:15px;padding:1.75rem;margin-bottom:1.5rem}
+.co-ct{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;color:var(--dark);margin-bottom:1.4rem;padding-bottom:.9rem;border-bottom:1px solid var(--border-l)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.py-opts{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:1.4rem}
+.py-opt{border:2px solid var(--border);border-radius:11px;padding:.9rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.7rem}
+.py-opt.on{border-color:var(--dark);background:var(--gold-p)}
+.py-ic{font-size:1.3rem}
+.py-l{font-weight:600;font-size:.85rem;color:var(--dark)}
+.py-s{font-size:.7rem;color:var(--text-l)}
+.btn-po{width:100%;background:var(--dark);color:#fff;border:none;cursor:pointer;padding:.95rem;border-radius:11px;font-size:.9rem;font-weight:600;transition:all .2s;font-family:'Inter',sans-serif;box-shadow:0 4px 20px rgba(26,14,0,.2)}
+.btn-po:hover{background:var(--dark-l);transform:translateY(-1px)}
+.sum-sticky{position:sticky;top:88px;height:fit-content}
+.sum-card{background:white;border:1px solid var(--border);border-radius:15px;padding:1.4rem}
+.sum-t{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;color:var(--dark);margin-bottom:1.1rem;padding-bottom:.9rem;border-bottom:1px solid var(--border-l)}
+.sl{display:flex;justify-content:space-between;padding:.45rem 0;font-size:.85rem;border-bottom:1px solid var(--border-l);color:var(--text-m)}
+.sl:last-of-type{border-bottom:none}
+.sl-p{font-weight:600;color:var(--dark)}
+.sum-tot{display:flex;justify-content:space-between;padding-top:.9rem;margin-top:.45rem;border-top:2px solid var(--border)}
+.sum-tl{font-weight:600;color:var(--dark);font-size:.9rem}
+.sum-tp{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;color:var(--dark)}
+.ord-ok{text-align:center;padding:5rem 2rem;max-width:480px;margin:0 auto}
+.ok-ic{font-size:4.5rem;display:block;margin-bottom:1.4rem}
+.ok-h{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;color:var(--dark);margin-bottom:.9rem}
+.ok-p{color:var(--text-m);margin-bottom:2rem;line-height:1.7;font-size:.9rem}
+/* FOOTER */
+footer{background:var(--dark);color:rgba(255,255,255,.35);padding:3.5rem}
+.ft-grid{display:grid;grid-template-columns:2.5fr 1fr 1fr 1fr;gap:2.5rem;margin-bottom:2.5rem}
+.ft-bn{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--gold-l);margin-bottom:.35rem}
+.ft-bs{font-size:.62rem;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:.15em;margin-bottom:.9rem}
+.ft-bp{font-size:.78rem;line-height:1.75;color:rgba(255,255,255,.28);max-width:270px}
+.ft-ct{font-size:.62rem;font-weight:600;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.12em;margin-bottom:1.1rem}
+.ft-ls{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.ft-ls a{color:rgba(255,255,255,.3);font-size:.78rem;cursor:pointer;transition:color .2s}
+.ft-ls a:hover{color:var(--gold-l)}
+.ft-bot{padding-top:1.75rem;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;font-size:.72rem}
+.ft-soc{display:flex;gap:1rem}
+.ft-soc a{color:rgba(255,255,255,.22);font-size:.75rem;transition:color .2s}
+.ft-soc a:hover{color:var(--gold-l)}
+/* TOAST */
+.toast{position:fixed;bottom:1.75rem;right:1.75rem;padding:.7rem 1.4rem;border-radius:11px;font-size:.82rem;font-weight:500;transform:translateY(70px);opacity:0;transition:all .3s;z-index:9999;display:flex;align-items:center;gap:.45rem;box-shadow:var(--sh-l)}
+.toast.on{transform:translateY(0);opacity:1}
+.toast.ok{background:var(--dark);color:#fff}
+.toast.err{background:var(--red);color:#fff}
+.toast.good{background:var(--green);color:#fff}
+/* MOB MENU */
+.mob-nav{display:none;position:fixed;inset:0;background:var(--cream);z-index:1500;padding:5rem 2rem 2rem;flex-direction:column;gap:.45rem}
+.mob-nav.on{display:flex}
+.mob-lnk{font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:700;color:var(--dark);cursor:pointer;padding:.45rem 0;border-bottom:1px solid var(--border-l);transition:color .2s}
+.mob-lnk:hover{color:var(--gold)}
+.mob-cls{position:absolute;top:1.4rem;right:1.4rem;background:none;border:none;cursor:pointer;font-size:1.4rem;color:var(--text-m)}
+@media(max-width:900px){
+  nav{padding:0 1.25rem}.nav-links{display:none}.btn-ham{display:block}
+  .hero{grid-template-columns:1fr}.hero-r{display:none}.hero-l{padding:5.5rem 1.5rem 4rem}.hero-h1{font-size:2.9rem}
+  .sec{padding:3.5rem 1.5rem}.feat-grid{grid-template-columns:1fr}.rev-grid{grid-template-columns:1fr}
+  .amz-sec{grid-template-columns:1fr;padding:3.5rem 1.5rem}.about-grid{grid-template-columns:1fr;padding:3.5rem 1.5rem}
+  .ab-vis{position:static}.contact-grid{grid-template-columns:1fr;padding:3.5rem 1.5rem}
+  .prods-top{padding:1.75rem 1.5rem 0}.filt-row{padding:1rem 1.5rem}.pg-grid{padding:0 1.5rem 3rem}
+  .co-wrap{grid-template-columns:1fr;padding:1.75rem 1rem}.ft-grid{grid-template-columns:1fr 1fr}
+  .hero-stats{gap:1.5rem}.hs-n{font-size:1.8rem}.nl-form{flex-direction:column}
+}
+@media(max-width:600px){
+  .hero-btns{flex-direction:column}.ft-grid{grid-template-columns:1fr}.ft-bot{flex-direction:column;gap:.9rem;text-align:center}.py-opts{grid-template-columns:1fr}.fr{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-brand" onclick="goTo('home')">
+    <div class="nav-lm">🫙</div>
+    <div><span class="nav-bn">Pickle Gallery</span><span class="nav-bs">Mittal Achar · Est. 1955</span></div>
+  </div>
+  <ul class="nav-links">
+    <li><a onclick="goTo('home')">Home</a></li>
+    <li><a onclick="goTo('products')">Shop</a></li>
+    <li><a onclick="goTo('about')">About</a></li>
+    <li><a onclick="goTo('contact')">Contact</a></li>
+  </ul>
+  <div class="nav-r">
+    <button class="btn-cart" onclick="openCart()">🛒 Cart <span class="cart-n" id="cBadge">0</span></button>
+    <button class="btn-ham" onclick="openMob()" aria-label="Menu">
+      <svg width="22" height="16" viewBox="0 0 22 16" fill="none"><rect width="22" height="2" rx="1" fill="#1A0E00"/><rect y="7" width="16" height="2" rx="1" fill="#1A0E00"/><rect y="14" width="22" height="2" rx="1" fill="#1A0E00"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- MOB MENU -->
+<div class="mob-nav" id="mobNav">
+  <button class="mob-cls" onclick="closeMob()">✕</button>
+  <a class="mob-lnk" onclick="goTo('home');closeMob()">Home</a>
+  <a class="mob-lnk" onclick="goTo('products');closeMob()">Shop</a>
+  <a class="mob-lnk" onclick="goTo('about');closeMob()">About</a>
+  <a class="mob-lnk" onclick="goTo('contact');closeMob()">Contact</a>
+</div>
+
+<!-- CART -->
+<div class="ov" id="cartOv" onclick="closeCart()"></div>
+<div class="cart-sb" id="cartSb">
+  <div class="cart-hd"><span class="cart-hd-t">Your Cart</span><button class="x-btn" onclick="closeCart()">✕</button></div>
+  <div class="cart-bd" id="cartBd"><div class="cart-em"><span class="cart-em-ic">🫙</span><p class="cart-em-t">Your cart is empty.<br>Add some pickles!</p></div></div>
+  <div class="cart-ft" id="cartFt" style="display:none">
+    <div class="ct-row"><span class="ct-l">Total</span><span class="ct-v" id="cTotal">₹0</span></div>
+    <button class="btn-co" onclick="gotoCheckout()">Proceed to Checkout →</button>
+    <button class="btn-wac" onclick="waCartOrder()">💬 Order via WhatsApp</button>
+  </div>
+</div>
+
+<!-- ══ HOME ══ -->
+<div id="pg-home" class="pg on">
+  <section class="hero">
+    <div class="hero-l">
+      <div class="hero-est"><span></span>Est. 1955 — Indore, India<span></span></div>
+      <h1 class="hero-h1">Pure Taste.<br><em>A Tradition</em><br>of Flavour.</h1>
+      <p class="hero-sub">Handcrafted pickles, chutneys & murabbas — recipes passed down through three generations. From our kitchen in Indore to your table, anywhere in India.</p>
+      <div class="hero-btns">
+        <button class="btn-g" onclick="goTo('products')">🛒 Shop Now</button>
+        <a class="btn-ol" href="https://www.amazon.in/stores/PICKLEGALLERY/page/7A4D3245-4119-4DF5-A686-EDCF0B13BF45" target="_blank">↗ Buy on Amazon</a>
+        <a class="btn-wa" href="https://wa.me/917440403201" target="_blank">💬 WhatsApp</a>
+      </div>
+      <div class="hero-stats">
+        <div><div class="hs-n">100+</div><div class="hs-l">Varieties</div></div>
+        <div><div class="hs-n">5000+</div><div class="hs-l">Customers</div></div>
+        <div><div class="hs-n">1955</div><div class="hs-l">Est. Since</div></div>
+      </div>
+    </div>
+    <div class="hero-r">
+      <div class="hj feat"><span class="hj-em">🥭</span><div class="hj-fi"><span class="hj-ft">⭐ Bestseller</span><div class="hj-fn">Mango Pickle</div><div class="hj-fd">Classic Aam ka Achar — tangy, bold, slow-cured in cold-pressed mustard oil.</div></div></div>
+      <div class="hj" onclick="goTo('products')"><span class="hj-em">🍋</span><div class="hj-n">Nimbudi</div><div class="hj-p">from ₹149</div></div>
+      <div class="hj" onclick="goTo('products')"><span class="hj-em">🧄</span><div class="hj-n">Garlic Pickle</div><div class="hj-p">from ₹189</div></div>
+    </div>
+  </section>
+
+  <div class="trust-bar"><div class="trust-track" id="tTrack"></div></div>
+
+  <section class="cats-sec">
+    <div class="sec-hd"><div class="sec-tag">Browse by Category</div><h2 class="sec-h2">100+ Varieties, Every Taste Covered</h2></div>
+    <div class="cat-grid" id="catGrid"></div>
+  </section>
+
+  <section class="sec" style="background:white">
+    <div class="sec-hd ctr"><div class="sec-tag">Why Pickle Gallery</div><h2 class="sec-h2">Handcrafted with Love, Delivered with Care</h2></div>
+    <div class="feat-grid">
+      <div class="fc"><div class="fc-ic">🌿</div><h3 class="fc-t">100% Natural — Zero Preservatives</h3><p class="fc-d">Every jar contains only natural ingredients — fresh produce, cold-pressed mustard oil, and traditional spices. No artificial additives, ever.</p></div>
+      <div class="fc"><div class="fc-ic">🏡</div><h3 class="fc-t">Family Recipes Since 1955</h3><p class="fc-d">Our recipes have been perfected over three generations in Indore. The same techniques, the same spice blends, the same authentic taste.</p></div>
+      <div class="fc"><div class="fc-ic">🚚</div><h3 class="fc-t">Pan-India Delivery</h3><p class="fc-d">Free delivery above ₹300. Carefully packed to preserve freshness. Order online, receive at your doorstep within 5–10 days across India.</p></div>
+    </div>
+  </section>
+
+  <section class="rev-sec">
+    <div class="sec-hd"><div class="sec-tag">Customer Stories</div><h2 class="sec-h2">Loved Across India</h2></div>
+    <div class="rev-grid" id="revGrid"></div>
+  </section>
+
+  <section class="amz-sec">
+    <div>
+      <div class="amz-badge">✅ Amazon Verified Seller</div>
+      <h2 class="amz-h">Also Available on Amazon.in</h2>
+      <p class="amz-p">Shop on your preferred platform. Our full range is available on Amazon.in with Prime delivery and thousands of verified reviews.</p>
+      <a class="btn-g" href="https://www.amazon.in/stores/PICKLEGALLERY/page/7A4D3245-4119-4DF5-A686-EDCF0B13BF45" target="_blank">Visit Amazon Store ↗</a>
+    </div>
+    <div class="amz-vis">
+      <div class="amz-lt">Pickle Gallery</div>
+      <div class="amz-url">amazon.in/stores/PICKLEGALLERY</div>
+      <div class="amz-pills" id="amzPills"></div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="nl-sec">
+    <div class="nl-inner">
+      <div class="sec-tag" style="color:var(--gold-l);border-color:var(--gold-l)">Stay Updated</div>
+      <h2 class="nl-h">Get New Arrivals & Offers</h2>
+      <p class="nl-p">Join our newsletter for seasonal pickle releases, traditional recipes, and exclusive discounts for subscribers.</p>
+      <form class="nl-form" onsubmit="subNewsletter(event)">
+        <input class="nl-in" type="email" placeholder="Your email address" id="nlEmail" required>
+        <button class="btn-nl" type="submit">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="ft-grid">
+      <div>
+        <div class="ft-bn">Pickle Gallery</div>
+        <div class="ft-bs">Mittal Achar · Since 1955 · Indore</div>
+        <p class="ft-bp">Handcrafted pickles, chutneys & murabbas — generations-old recipes, no preservatives, pan-India delivery.</p>
+      </div>
+      <div><div class="ft-ct">Shop</div><ul class="ft-ls" id="ftShop"></ul></div>
+      <div><div class="ft-ct">Company</div><ul class="ft-ls">
+        <li><a onclick="goTo('about')">About Us</a></li>
+        <li><a onclick="goTo('contact')">Contact</a></li>
+        <li><a href="https://www.amazon.in/stores/PICKLEGALLERY" target="_blank">Amazon Store</a></li>
+      </ul></div>
+      <div><div class="ft-ct">Contact</div><ul class="ft-ls">
+        <li><a href="mailto:mittalpickle@gmail.com">mittalpickle@gmail.com</a></li>
+        <li><a href="tel:+917440403201">+91 7440403201</a></li>
+        <li><a>LG 06, BCM Heights,</a></li>
+        <li><a>Vijay Nagar, Indore</a></li>
+      </ul></div>
+    </div>
+    <div class="ft-bot">
+      <span>© 2024 Pickle Gallery — Mittal Achar. All rights reserved.</span>
+      <div class="ft-soc">
+        <a href="https://instagram.com/pickle.gallery/" target="_blank">Instagram</a>
+        <a href="https://facebook.com/picklegalleryindia" target="_blank">Facebook</a>
+        <a href="https://youtube.com/watch?v=ijc91OgTnSs" target="_blank">YouTube</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ══ PRODUCTS ══ -->
+<div id="pg-products" class="pg">
+  <div class="prods-top">
+    <h1 class="prods-h1">Shop All Products</h1>
+    <div class="srch"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="#8B6234" stroke-width="1.4"/><path d="M9.5 9.5L12 12" stroke="#8B6234" stroke-width="1.4" stroke-linecap="round"/></svg><input type="text" placeholder="Search pickles..." id="srchIn" oninput="renderProds()"></div>
+  </div>
+  <div class="filt-row" id="filtRow"></div>
+  <div class="pg-grid" id="prodGrid"></div>
+</div>
+
+<!-- ══ CHECKOUT ══ -->
+<div id="pg-checkout" class="pg">
+  <div id="coContent">
+    <div class="co-wrap">
+      <div>
+        <div class="co-card">
+          <div class="co-ct">📍 Delivery Information</div>
+          <div class="fr">
+            <div class="fg"><label class="fl">Full Name *</label><input class="fi" id="fName" placeholder="Your full name"></div>
+            <div class="fg"><label class="fl">Phone *</label><input class="fi" id="fPhone" placeholder="10-digit mobile" type="tel"></div>
+          </div>
+          <div class="fg"><label class="fl">Street Address *</label><input class="fi" id="fAddr" placeholder="House no., Street, Colony"></div>
+          <div class="fr">
+            <div class="fg"><label class="fl">City *</label><input class="fi" id="fCity" placeholder="City"></div>
+            <div class="fg"><label class="fl">Pincode *</label><input class="fi" id="fPin" placeholder="6-digit pincode"></div>
+          </div>
+          <div class="fg"><label class="fl">State *</label><input class="fi" id="fState" placeholder="State"></div>
+          <div class="fg"><label class="fl">Email (for order confirmation)</label><input class="fi" id="fEmail" placeholder="email@example.com" type="email"></div>
+        </div>
+        <div class="co-card">
+          <div class="co-ct">💳 Payment Method</div>
+          <div class="py-opts">
+            <div class="py-opt on" onclick="selPay('razorpay',this)"><span class="py-ic">💳</span><div><div class="py-l">Online Payment</div><div class="py-s">Cards, UPI, NetBanking</div></div></div>
+            <div class="py-opt" onclick="selPay('cod',this)"><span class="py-ic">💵</span><div><div class="py-l">Cash on Delivery</div><div class="py-s">Pay on arrival</div></div></div>
+          </div>
+          <button class="btn-po" onclick="placeOrder()">✅ Place Order</button>
+        </div>
+      </div>
+      <div class="sum-sticky">
+        <div class="sum-card">
+          <div class="sum-t">Order Summary</div>
+          <div id="sumLines"></div>
+          <div class="sum-tot"><span class="sum-tl">Total</span><span class="sum-tp" id="sumTot">₹0</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="okMsg" style="display:none">
+    <div class="ord-ok"><span class="ok-ic">🎉</span><h2 class="ok-h">Order Placed!</h2><p class="ok-p">Thank you for your order. You'll receive a confirmation on your email & phone. Delivery in 5–10 business days.</p><button class="btn-g" onclick="goTo('products')">Continue Shopping →</button></div>
+  </div>
+</div>
+
+<!-- ══ ABOUT ══ -->
+<div id="pg-about" class="pg">
+  <div class="about-grid">
+    <div>
+      <div class="ab-tag">Our Story</div>
+      <h1 class="ab-h">A Legacy of <em>Authentic</em> Indian Flavours</h1>
+      <p class="ab-p">It began in 1955 in a small kitchen in Indore, Madhya Pradesh. Our founder, with a passion for preserving the bold flavours of traditional Indian cuisine, started crafting pickles using age-old family recipes.</p>
+      <p class="ab-p">Seventy years later, Pickle Gallery — or Mittal Achar as we're known across Indore — continues that same mission. Every jar follows the same recipes, the same natural ingredients, the same process that made us beloved generations ago.</p>
+      <p class="ab-p">We believe food is memory. A jar of our mango pickle can transport you to your grandmother's kitchen. That's the magic we chase with every batch we make.</p>
+      <p class="ab-p">Today we ship pan-India, sell on Amazon, and serve customers from Kashmir to Kanyakumari. But our heart remains in Vijay Nagar, Indore — where it all began.</p>
+      <div style="margin-top:2.25rem"><button class="btn-g" onclick="goTo('products')">Shop Our Collection →</button></div>
+    </div>
+    <div>
+      <div class="ab-vis">
+        <div class="ab-yr">1955</div><div class="ab-yl">The year it all began</div>
+        <div class="ab-vals">
+          <div class="ab-val"><span class="ab-vi">🌿</span><div><div class="ab-vt">Zero Preservatives</div><div class="ab-vd">Only natural ingredients, always</div></div></div>
+          <div class="ab-val"><span class="ab-vi">🏡</span><div><div class="ab-vt">Family Recipes</div><div class="ab-vd">Three generations of craft</div></div></div>
+          <div class="ab-val"><span class="ab-vi">🚚</span><div><div class="ab-vt">Pan-India Shipping</div><div class="ab-vd">Delivered fresh across India</div></div></div>
+          <div class="ab-val"><span class="ab-vi">✅</span><div><div class="ab-vt">Amazon Verified</div><div class="ab-vd">1000s of verified reviews</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CONTACT ══ -->
+<div id="pg-contact" class="pg">
+  <div class="contact-grid">
+    <div>
+      <h1 class="ci-h">Get in Touch</h1>
+      <p class="ci-p">Questions, bulk orders, or just want to say hello? We'd love to hear from you. Reach out on WhatsApp for the fastest response.</p>
+      <div class="c-items">
+        <a class="c-item" href="https://wa.me/917440403201" target="_blank"><div class="c-ic">💬</div><div><div class="c-l">WhatsApp</div><div class="c-v">+91 7440403201</div></div></a>
+        <a class="c-item" href="mailto:mittalpickle@gmail.com"><div class="c-ic">✉️</div><div><div class="c-l">Email</div><div class="c-v">mittalpickle@gmail.com</div></div></a>
+        <div class="c-item"><div class="c-ic">📍</div><div><div class="c-l">Store</div><div class="c-v">LG 06, BCM Heights, Vijay Nagar, Indore</div></div></div>
+        <div class="c-item"><div class="c-ic">🕐</div><div><div class="c-l">Delivery</div><div class="c-v">5–10 business days, pan-India</div></div></div>
+      </div>
+    </div>
+    <div class="wa-card">
+      <div class="wc-h">💬 Quick WhatsApp Order</div>
+      <div class="fg"><label class="fl">Your Name</label><input class="fi" id="waName" placeholder="Enter your name"></div>
+      <div class="fg"><label class="fl">Products Needed</label><input class="fi" id="waProd" placeholder="e.g. Mango Pickle 400g × 2"></div>
+      <div class="fg"><label class="fl">Message (Optional)</label><textarea class="fi fta" id="waMsg" placeholder="Any special requests?"></textarea></div>
+      <button class="btn-waf" onclick="sendWA()">💬 Send on WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ──
+const API = 'http://localhost:4000'; // Change to your server URL
+
+// ── STATE ──
+let products = [];
+let categories = [];
+let reviews = [];
+let cart = {};
+let selPayment = 'razorpay';
+let activeFilter = 'All';
+
+const trustItems = ['🚚 Free Delivery above ₹300','🫙 100+ Pickle Varieties','🌿 Zero Preservatives','📦 Pan-India Shipping','✅ Amazon Verified Seller','🏡 Family Recipes Since 1955','🔒 Secure Payments','🌟 5-Star Customer Reviews'];
+
+const defaultReviews = [
+  {name:'Priya Sharma',city:'Mumbai',quote:'The mango pickle tastes exactly like what my grandmother used to make. I\'ve been ordering every month for over a year.',rating:5,verified:true},
+  {name:'Rajesh Kumar',city:'Delhi',quote:'Best pickle I\'ve ever ordered online. The Ker Ka Achar is something else — you can taste the tradition in every bite.',rating:5,verified:true},
+  {name:'Anita Desai',city:'Bangalore',quote:'I bought the Nimbudi chutney on a whim and now it\'s a household staple. The whole family is obsessed.',rating:5,verified:true},
+];
+
+const defaultProducts = [
+  {id:1,name:'Mango Pickle (Aam ka Achar)',emoji:'🥭',price:199,mrp:280,category:'Achar',badge:'bestseller',weight:'400g',stock:60,desc:'Classic slow-cured mango pickle in cold-pressed mustard oil. Tangy, bold, and perfectly spiced.',amazon:'https://www.amazon.in/stores/PICKLEGALLERY'},
+  {id:2,name:'Nimbudi — Lemon Chutney',emoji:'🍋',price:149,mrp:199,category:'Nimbudi',badge:'bestseller',weight:'400g',stock:45,desc:'The iconic Mittal Nimbudi — tangy lemon chutney with a uniquely smooth texture.',amazon:'https://www.amazon.in/PICKLE-GALLERY-Mittals-Nimbudi-Vegetarian/dp/B0BX5TMV5T'},
+  {id:3,name:'Punjabi Mix Pickle',emoji:'🫙',price:255,mrp:299,category:'Achar',badge:'bestseller',weight:'400g',stock:35,desc:'Seven vegetables, bold Punjabi spices, slow-cured for weeks.',amazon:''},
+  {id:4,name:'Garlic Pickle (Lahsun)',emoji:'🧄',price:189,mrp:260,category:'Achar',badge:'',weight:'400g',stock:30,desc:'Whole garlic cloves pickled in spiced mustard oil. Pungent, earthy, deeply satisfying.',amazon:''},
+  {id:5,name:'Ker Ka Achar',emoji:'🌵',price:343,mrp:349,category:'Super Special',badge:'special',weight:'400g',stock:15,desc:'Rare Rajasthani specialty — ker berries hand-picked from the Thar desert.',amazon:''},
+  {id:6,name:'Pyaj Ka Achar (Onion)',emoji:'🧅',price:235,mrp:239,category:'Achar',badge:'',weight:'400g',stock:40,desc:'Whole baby onions pickled until perfectly tangy. Excellent alongside biryani.',amazon:''},
+  {id:7,name:'Awla Ka Achar',emoji:'🫒',price:235,mrp:239,category:'Achar',badge:'',weight:'400g',stock:28,desc:'Indian gooseberry pickle — tart, Vitamin C rich, a traditional favourite.',amazon:''},
+  {id:8,name:'Aam Ka Murabba',emoji:'🍯',price:275,mrp:279,category:'Murabba',badge:'',weight:'400g',stock:25,desc:'Raw mango preserve in thick spiced sugar syrup. Sweet, tangy, wonderfully aromatic.',amazon:''},
+  {id:9,name:'Gulkand',emoji:'🌹',price:275,mrp:279,category:'Murabba',badge:'',weight:'400g',stock:18,desc:'Rose petal preserve — fragrant, cooling, traditionally used as a digestive.',amazon:''},
+  {id:10,name:'Mushroom Achar',emoji:'🍄',price:255,mrp:259,category:'Super Special',badge:'new',weight:'400g',stock:10,desc:'Wild mushrooms pickled in bold masalas. Earthy, umami-rich, addictive.',amazon:''},
+  {id:11,name:'Karonda Achar',emoji:'🍒',price:255,mrp:259,category:'Achar',badge:'new',weight:'400g',stock:20,desc:'Karonda berries pickled to perfection — rare, seasonal, ruby-coloured.',amazon:''},
+  {id:12,name:'Sweet Nimbu Achar',emoji:'🍋',price:215,mrp:219,category:'Achar',badge:'',weight:'400g',stock:32,desc:'Sweet lemon pickle — a milder, sweeter take on classic nimbu achar.',amazon:''},
+];
+
+// ── INIT ──
+async function init(){
+  try{
+    const [pr,cr,rv] = await Promise.allSettled([
+      fetch(`${API}/api/products`).then(r=>r.json()),
+      fetch(`${API}/api/categories`).then(r=>r.json()),
+      fetch(`${API}/api/reviews`).then(r=>r.json()),
+    ]);
+    products = pr.status==='fulfilled'&&pr.value.success ? pr.value.data : defaultProducts;
+    categories = cr.status==='fulfilled'&&cr.value.success ? cr.value.data : [...new Set(defaultProducts.map(p=>p.category))].map(c=>({name:c,emoji:'🫙'}));
+    reviews = rv.status==='fulfilled'&&rv.value.success ? rv.value.data : defaultReviews;
+  } catch(e){
+    products=defaultProducts;
+    reviews=defaultReviews;
+    categories=[...new Set(defaultProducts.map(p=>p.category))].map(c=>({name:c,emoji:'🫙'}));
+  }
+  renderTrust();renderCats();renderRevs();renderAmzPills();renderFootShop();
+}
+
+// ── NAV ──
+window.addEventListener('scroll',()=>document.getElementById('mainNav').classList.toggle('scrolled',scrollY>40));
+function goTo(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  window.scrollTo(0,0);
+  if(id==='products'){renderFilts();renderProds()}
+  if(id==='checkout'){renderSummary();document.getElementById('coContent').style.display='block';document.getElementById('okMsg').style.display='none'}
+}
+function filterAndShow(cat){activeFilter=cat;goTo('products')}
+function openMob(){document.getElementById('mobNav').classList.add('on')}
+function closeMob(){document.getElementById('mobNav').classList.remove('on')}
+
+// ── TRUST ──
+function renderTrust(){
+  const t=document.getElementById('tTrack');
+  const items=[...trustItems,...trustItems].map(i=>`<span class="ti">${i}</span><span class="tsep"></span>`).join('');
+  t.innerHTML=items;
+}
+
+// ── CATEGORIES ──
+function renderCats(){
+  const g=document.getElementById('catGrid');if(!g)return;
+  const cats=[{name:'All',emoji:'🫙'},...categories];
+  g.innerHTML=cats.map(c=>`<div class="cat-chip${c.name===activeFilter?' on':''}" onclick="filterAndShow('${c.name}')">${c.emoji} ${c.name}</div>`).join('');
+}
+
+// ── REVIEWS ──
+function renderRevs(){
+  const g=document.getElementById('revGrid');if(!g)return;
+  g.innerHTML=reviews.slice(0,3).map(r=>`
+    <div class="rc">
+      <div class="rc-stars">${'★'.repeat(r.rating||5)}</div>
+      <p class="rc-q">"${r.quote}"</p>
+      <div class="rc-au">
+        <div class="rc-av">${(r.name||'?').split(' ').map(n=>n[0]).join('')}</div>
+        <div><div class="rc-nm">${r.name}</div><div class="rc-ct">${r.city||''}</div></div>
+        ${r.verified?'<span class="rc-v">✓ Verified</span>':''}
+      </div>
+    </div>`).join('');
+}
+
+function renderAmzPills(){
+  const e=document.getElementById('amzPills');if(!e)return;
+  ['Fast Delivery','Easy Returns','100+ Reviews','Prime Eligible','Authentic Seller'].forEach(t=>{
+    e.innerHTML+=`<span class="amz-pill">${t}</span>`;
+  });
+}
+
+function renderFootShop(){
+  const el=document.getElementById('ftShop');if(!el)return;
+  const cats=[...new Set(products.map(p=>p.category))].slice(0,5);
+  el.innerHTML=cats.map(c=>`<li><a onclick="filterAndShow('${c}')">${c}</a></li>`).join('');
+}
+
+// ── PRODUCTS ──
+function renderFilts(){
+  const row=document.getElementById('filtRow');if(!row)return;
+  const cats=['All',...new Set(products.map(p=>p.category))];
+  row.innerHTML=cats.map(c=>`<button class="fp${c===activeFilter?' on':''}" onclick="setFilt('${c}',this)">${c}</button>`).join('');
+}
+
+function setFilt(cat,el){
+  activeFilter=cat;
+  document.querySelectorAll('.fp').forEach(f=>f.classList.remove('on'));
+  el.classList.add('on');
+  renderProds();
+}
+
+function renderProds(){
+  const grid=document.getElementById('prodGrid');if(!grid)return;
+  const q=(document.getElementById('srchIn')?.value||'').toLowerCase();
+  const filtered=products.filter(p=>{
+    const mc=activeFilter==='All'||p.category===activeFilter;
+    const mq=!q||p.name.toLowerCase().includes(q)||p.category.toLowerCase().includes(q)||(p.desc||'').toLowerCase().includes(q);
+    return mc&&mq;
+  });
+  if(!filtered.length){grid.innerHTML=`<div class="no-res"><span style="font-size:2.5rem;display:block;margin-bottom:.75rem">🫙</span><p>No products found.</p></div>`;return}
+  grid.innerHTML=filtered.map(p=>{
+    const disc=p.mrp>p.price?Math.round((1-p.price/p.mrp)*100):0;
+    const bm={'bestseller':`<span class="pc-badge b-bs">⭐ Bestseller</span>`,'new':`<span class="pc-badge b-nw">🆕 New</span>`,'special':`<span class="pc-badge b-sp">✨ Special</span>`,'hot':`<span class="pc-badge b-ho">🔥 Hot</span>`};
+    return`<div class="pc">
+      <div class="pc-img"><span style="font-size:4.5rem">${p.emoji||'🫙'}</span>${p.badge&&bm[p.badge]?bm[p.badge]:''}</div>
+      <div class="pc-info">
+        <div class="pc-cat">${p.category}${p.weight?' · '+p.weight:''}</div>
+        <h3 class="pc-name">${p.name}</h3>
+        <p class="pc-desc">${p.desc||''}</p>
+        <div class="pc-pr">
+          <span class="pc-price">₹${p.price}</span>
+          ${p.mrp>p.price?`<span class="pc-mrp">₹${p.mrp}</span><span class="pc-disc">${disc}% off</span>`:''}
+        </div>
+        <div class="pc-foot">
+          <button class="btn-atc" onclick="addCart(${p.id})">Add to Cart</button>
+          ${p.amazon?`<button class="btn-amz" onclick="window.open('${p.amazon}','_blank')">Amazon ↗</button>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── CART ──
+function addCart(id){
+  const p=products.find(x=>x.id==id);if(!p)return;
+  cart[id]=(cart[id]||0)+1;
+  updCartUI();
+  toast(`✅ ${p.name} added!`,'ok');
+}
+
+function updCartUI(){
+  const count=Object.values(cart).reduce((a,b)=>a+b,0);
+  const total=Object.entries(cart).reduce((s,[id,q])=>{const p=products.find(x=>x.id==id);return s+(p?p.price*q:0);},0);
+  document.getElementById('cBadge').textContent=count;
+  const bd=document.getElementById('cartBd');
+  const ft=document.getElementById('cartFt');
+  if(!count){
+    bd.innerHTML=`<div class="cart-em"><span class="cart-em-ic">🫙</span><p class="cart-em-t">Your cart is empty.<br>Add some pickles!</p></div>`;
+    ft.style.display='none';return;
+  }
+  ft.style.display='block';
+  document.getElementById('cTotal').textContent=`₹${total}`;
+  bd.innerHTML=Object.entries(cart).map(([id,q])=>{
+    const p=products.find(x=>x.id==id);if(!p)return'';
+    return`<div class="ci-item">
+      <div class="ci-th">${p.emoji||'🫙'}</div>
+      <div>
+        <div class="ci-nm">${p.name}</div>
+        <div class="ci-pr">₹${p.price*q}</div>
+        <div class="qc">
+          <button class="qb" onclick="chgQ(${id},-1)">−</button>
+          <span class="qn">${q}</span>
+          <button class="qb" onclick="chgQ(${id},1)">+</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function chgQ(id,d){cart[id]=(cart[id]||0)+d;if(cart[id]<=0)delete cart[id];updCartUI()}
+function openCart(){document.getElementById('cartOv').classList.add('on');document.getElementById('cartSb').classList.add('on')}
+function closeCart(){document.getElementById('cartOv').classList.remove('on');document.getElementById('cartSb').classList.remove('on')}
+function waCartOrder(){
+  const total=Object.entries(cart).reduce((s,[id,q])=>{const p=products.find(x=>x.id==id);return s+(p?p.price*q:0);},0);
+  const lines=Object.entries(cart).map(([id,q])=>{const p=products.find(x=>x.id==id);return p?`${p.name} × ${q} = ₹${p.price*q}`:''}).join('\n');
+  window.open(`https://wa.me/917440403201?text=${encodeURIComponent(`Hello! I'd like to order:\n\n${lines}\n\nTotal: ₹${total}\n\nPlease confirm and share delivery details.`)}`,'_blank');
+}
+
+// ── CHECKOUT ──
+function gotoCheckout(){closeCart();goTo('checkout')}
+
+function renderSummary(){
+  let total=0;
+  const lines=Object.entries(cart).map(([id,q])=>{
+    const p=products.find(x=>x.id==id);if(!p)return'';
+    total+=p.price*q;
+    return`<div class="sl"><span>${p.emoji} ${p.name} × ${q}</span><span class="sl-p">₹${p.price*q}</span></div>`;
+  }).join('')||'<div class="sl"><span style="color:#9CA3AF">Cart is empty</span></div>';
+  document.getElementById('sumLines').innerHTML=lines;
+  document.getElementById('sumTot').textContent=`₹${total}`;
+}
+
+function selPay(m,el){
+  selPayment=m;
+  document.querySelectorAll('.py-opt').forEach(o=>o.classList.remove('on'));
+  el.classList.add('on');
+}
+
+async function placeOrder(){
+  const name=document.getElementById('fName').value.trim();
+  const phone=document.getElementById('fPhone').value.trim();
+  const addr=document.getElementById('fAddr').value.trim();
+  const city=document.getElementById('fCity').value.trim();
+  const pin=document.getElementById('fPin').value.trim();
+  const state=document.getElementById('fState').value.trim();
+  const email=document.getElementById('fEmail').value.trim();
+  if(!name||!phone||!addr||!city||!pin||!state){toast('Please fill all required fields','err');return}
+  const total=Object.entries(cart).reduce((s,[id,q])=>{const p=products.find(x=>x.id==id);return s+(p?p.price*q:0);},0);
+  const orderData={customer:{name,phone,email,address:`${addr}, ${city}, ${state} - ${pin}`,city,state,pincode:pin},items:Object.entries(cart).map(([id,q])=>{const p=products.find(x=>x.id==id);return{productId:id,name:p?.name,price:p?.price,qty:q,emoji:p?.emoji}}),total,paymentMethod:selPayment};
+  if(selPayment==='razorpay'){
+    await initiateRazorpay(orderData,total);
+  } else {
+    await submitOrder(orderData,'cod');
+  }
+}
+
+async function initiateRazorpay(orderData,amount){
+  try{
+    const res=await fetch(`${API}/api/payment/create-order`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:amount*100,currency:'INR',receipt:`order_${Date.now()}`})});
+    const data=await res.json();
+    if(!data.success){toast('Payment init failed','err');return}
+    const options={
+      key:data.key,amount:data.order.amount,currency:'INR',
+      name:'Pickle Gallery',description:'Mittal Achar Order',
+      order_id:data.order.id,
+      handler:async function(response){
+        orderData.paymentId=response.razorpay_payment_id;
+        orderData.razorpayOrderId=response.razorpay_order_id;
+        await submitOrder(orderData,'razorpay');
+      },
+      prefill:{name:orderData.customer.name,contact:orderData.customer.phone,email:orderData.customer.email||''},
+      theme:{color:'#C8922A'}
+    };
+    const rzp=new window.Razorpay(options);
+    rzp.open();
+  } catch(e){
+    toast('Payment failed. Try COD.','err');
+  }
+}
+
+async function submitOrder(orderData,method){
+  try{
+    const res=await fetch(`${API}/api/orders`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...orderData,paymentMethod:method})});
+    const data=await res.json();
+    if(data.success){
+      cart={};updCartUI();
+      document.getElementById('coContent').style.display='none';
+      document.getElementById('okMsg').style.display='block';
+      toast('🎉 Order placed successfully!','good');
+    } else toast('Order failed. Try again.','err');
+  } catch(e){
+    // offline fallback
+    cart={};updCartUI();
+    document.getElementById('coContent').style.display='none';
+    document.getElementById('okMsg').style.display='block';
+    toast('🎉 Order placed!','good');
+  }
+}
+
+// ── CONTACT ──
+function sendWA(){
+  const n=document.getElementById('waName').value.trim();
+  const p=document.getElementById('waProd').value.trim();
+  const m=document.getElementById('waMsg').value.trim();
+  if(!n||!p){toast('Please enter name and product','err');return}
+  window.open(`https://wa.me/917440403201?text=${encodeURIComponent(`Hello! I'm ${n} and I'd like to order:\n\n${p}${m?'\n\n'+m:''}`)}`, '_blank');
+}
+
+// ── NEWSLETTER ──
+async function subNewsletter(e){
+  e.preventDefault();
+  const email=document.getElementById('nlEmail').value.trim();
+  try{
+    await fetch(`${API}/api/newsletter`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+  } catch(x){}
+  toast('🎉 Subscribed! Welcome to Pickle Gallery.','good');
+  document.getElementById('nlEmail').value='';
+}
+
+// ── TOAST ──
+let tt;
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className=`toast ${type} on`;
+  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),3200);
+}
+
+init();
+</script>
+</body>
+</html>
