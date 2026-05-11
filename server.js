@@ -16,13 +16,15 @@ app.get('/', (req,res)=>{
   res.send('Backend Running');
 });
 
-app.listen(5000, ()=>{
-  console.log('Server running');
-});
 app.get('/api/test', (req,res)=>{
   res.json({
     success:true,
     message:'API working'
   });
 });
+
 app.use('/api/products', require('./routes/productRoutes'));
+
+app.listen(5000, ()=>{
+  console.log('Server running');
+});
